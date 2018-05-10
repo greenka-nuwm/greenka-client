@@ -1,21 +1,30 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { COLOR, ThemeProvider } from 'react-native-material-ui';
+import GreenkaToolbar from './src/components/toolbar/Toolbar';
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+const uiTheme = {
+  palette: {
+    primaryColor: COLOR.green800,
   },
-});
+  toolbar: {
+    container: {
+      height: 50,
+    },
+  },
+};
 
-const App = () => (
-  <View style={styles.container}>
-    <Text>Open up App.js to start working on your app!</Text>
-    <Text>Changes you make will automatically reload.</Text>
-    <Text>Shake your phone to open the developer menu.</Text>
-  </View>
-);
+const App = () => {
+  const onLeftElementPress = () => {};
+
+  return (
+    <ThemeProvider uiTheme={uiTheme}>
+      <GreenkaToolbar
+        leftElement="menu"
+        centerElement="greenka"
+        onLeftElementPress={onLeftElementPress}
+      />
+    </ThemeProvider>
+  );
+};
 
 export default App;
