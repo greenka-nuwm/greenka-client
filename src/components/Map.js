@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import { StyleSheet } from 'react-native';
 import MapView from 'react-native-maps';
-import MapsService from '../services/MapsService';
 
 export const styles = StyleSheet.create({
   map: {
@@ -9,42 +9,23 @@ export const styles = StyleSheet.create({
   },
 });
 
-class Map extends Component {
-  constructor(props) {
-    super(props);
+const Map = props => (
+  <MapView
+    style={styles.map}
+    region={{
+      latitude: props.latitude,
+      longitude: props.longitude,
+      latitudeDelta: props.latitudeDelta,
+      longitudeDelta: props.longitudeDelta,
+    }}
+  />
+);
 
-    this.state = {
-      latitude: null,
-      longitude: null,
-    };
-  }
-
-  componentDidMount() {
-    MapsService.getCurrentPosition().then(position => (
-      this.setState({
-        latitude: position.coords.latitude,
-        longitude: position.coords.longitude,
-      })
-    ));
-  }
-
-  render() {
-    if (this.state.latitude && this.state.longitude) {
-      return (
-        <MapView
-          style={styles.map}
-          region={{
-            latitude: this.state.latitude,
-            longitude: this.state.longitude,
-            latitudeDelta: 0.01,
-            longitudeDelta: 0.01,
-          }}
-        />
-      );
-    }
-
-    return null;
-  }
-}
+Map.propTypes = {
+  latitude: PropTypes.number.isRequired,
+  longitude: PropTypes.number.isRequired,
+  latitudeDelta: PropTypes.number.isRequired,
+  longitudeDelta: PropTypes.number.isRequired,
+};
 
 export default Map;

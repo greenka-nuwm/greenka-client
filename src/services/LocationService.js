@@ -1,4 +1,6 @@
-class MapsService {
+import { PermissionsAndroid } from 'react-native';
+
+class LocationService {
   static getCurrentPosition() {
     return new Promise((resolve, reject) => {
       navigator.geolocation.getCurrentPosition(
@@ -8,6 +10,10 @@ class MapsService {
       );
     });
   }
+
+  static getLocationPermission() {
+    return Boolean(PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION));
+  }
 }
 
-export default MapsService;
+export default LocationService;
