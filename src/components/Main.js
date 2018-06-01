@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { AsyncStorage, StyleSheet, View } from 'react-native';
-import { ThemeProvider, Toolbar } from 'react-native-material-ui';
+import { ActionButton, ThemeProvider, Toolbar } from 'react-native-material-ui';
+import { NavigationActions } from 'react-navigation';
 import { uiTheme } from '../consts/styles';
 import LocationService from '../services/LocationService';
 import Map from './Map';
@@ -58,6 +59,10 @@ class Main extends Component {
         </ThemeProvider>
 
         {this.state && this.state.location && <Map {...this.state.location} />}
+
+        <ThemeProvider uiTheme={uiTheme}>
+          <ActionButton onPress={() => this.props.navigation.dispatch(NavigationActions.navigate({ routeName: 'AddPlace' }))} />
+        </ThemeProvider>
       </View>
     );
   }
@@ -66,6 +71,7 @@ class Main extends Component {
 Main.propTypes = {
   navigation: PropTypes.shape({
     openDrawer: PropTypes.func.isRequired,
+    dispatch: PropTypes.func.isRequired,
   }).isRequired,
 };
 

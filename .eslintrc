@@ -12,7 +12,8 @@
       { "blankLine": "any", "prev": ["const", "let", "var"], "next": ["const", "let", "var"]},
       { "blankLine": "always", "prev": "directive", "next": "*" },
       { "blankLine": "any", "prev": "directive", "next": "directive" }
-    ]
+    ],
+    "function-paren-newline": "off"
   },
   "globals": {
     "navigator": true
