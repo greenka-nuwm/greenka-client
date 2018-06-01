@@ -65,7 +65,6 @@ class AddPlace extends Component {
         {field.icon}
 
         <TextField
-          inlineImageLeft="note"
           label={field.label}
           value={field.value}
           onChangeText={value => this.updateState(value, propName)}
