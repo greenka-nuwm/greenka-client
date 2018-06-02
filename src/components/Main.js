@@ -1,24 +1,26 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { AsyncStorage, StyleSheet, View } from 'react-native';
+import { AsyncStorage, View } from 'react-native';
+import MapView from 'react-native-maps';
 import { ActionButton, ThemeProvider, Toolbar } from 'react-native-material-ui';
 import { NavigationActions } from 'react-navigation';
-import { uiTheme } from '../consts/styles';
+import { location } from '../consts/appConsts';
+import { uiTheme, mapStyles, containerStyles } from '../consts/styles';
 import LocationService from '../services/LocationService';
-import Map from './Map';
-
-export const styles = StyleSheet.create({
-  container: {
-    ...StyleSheet.absoluteFillObject,
-    justifyContent: 'space-between',
-  },
-});
 
 class Main extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      location,
+    };
+  }
+
   componentDidMount() {
-    AsyncStorage.getItem('location').then((location) => {
+    AsyncStorage.getItem('location').then(data => {
       this.setState({
-        location: JSON.parse(location),
+        location: JSON.parse(data),
       });
     });
 
@@ -28,7 +30,7 @@ class Main extends Component {
   }
 
   setLocationToState() {
-    LocationService.getCurrentPosition().then((position) => {
+    LocationService.getCurrentPosition().then(position => {
       this.setState({
         location: {
           latitude: position.coords.latitude,
@@ -49,7 +51,7 @@ class Main extends Component {
 
   render() {
     return (
-      <View style={styles.container}>
+      <View style={containerStyles}>
         <ThemeProvider uiTheme={uiTheme}>
           <Toolbar
             leftElement="menu"
@@ -58,7 +60,7 @@ class Main extends Component {
           />
         </ThemeProvider>
 
-        {this.state && this.state.location && <Map {...this.state.location} />}
+        <MapView style={mapStyles} region={this.state.location} />
 
         <ThemeProvider uiTheme={uiTheme}>
           <ActionButton onPress={() => this.props.navigation.dispatch(NavigationActions.navigate({ routeName: 'AddPlace' }))} />

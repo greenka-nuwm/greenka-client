@@ -13,7 +13,9 @@
       { "blankLine": "always", "prev": "directive", "next": "*" },
       { "blankLine": "any", "prev": "directive", "next": "directive" }
     ],
-    "function-paren-newline": "off"
+    "function-paren-newline": "off",
+    "arrow-parens": ["error", "as-needed"],
+    "react/no-did-mount-set-state": "off"
   },
   "globals": {
     "navigator": true
