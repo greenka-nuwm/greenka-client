@@ -10,6 +10,7 @@ import com.facebook.react.shell.MainReactPackage;
 import com.facebook.soloader.SoLoader;
 import com.airbnb.android.react.maps.MapsPackage;
 import com.devfd.RNGeocoder.RNGeocoderPackage;
+import com.arttitude360.reactnative.rngoogleplaces.RNGooglePlacesPackage;
 
 import java.util.Arrays;
 import java.util.List;
@@ -28,7 +29,8 @@ public class MainApplication extends Application implements ReactApplication {
           new MainReactPackage(),
           new VectorIconsPackage(),
           new MapsPackage(),
-          new RNGeocoderPackage()
+          new RNGeocoderPackage(),
+          new RNGooglePlacesPackage()
       );
     }
 

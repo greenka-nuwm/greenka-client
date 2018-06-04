@@ -6,10 +6,10 @@ import AddPlace from './components/AddPlace';
 import Places from './components/Places';
 import Info from './components/Info';
 import AddResponse from './components/AddResponse';
-import { location } from './consts/appConsts';
+import { LOCATION } from './consts/appConsts';
 
 if (AsyncStorage.getItem('location') != null) {
-  AsyncStorage.setItem('location', JSON.stringify(location));
+  AsyncStorage.setItem('location', JSON.stringify(LOCATION));
 }
 
 const App = createDrawerNavigator({

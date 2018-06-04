@@ -1,13 +1,25 @@
 import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import update from 'immutability-helper';
-import { View, ScrollView, AsyncStorage, StyleSheet, Modal } from 'react-native';
+import {
+  View,
+  ScrollView,
+  AsyncStorage,
+  StyleSheet,
+  Modal,
+  TouchableOpacity,
+} from 'react-native';
 import MapView from 'react-native-maps';
 import { Dropdown } from 'react-native-material-dropdown';
-import { Button, ThemeProvider, Toolbar } from 'react-native-material-ui';
+import {
+  Button,
+  ThemeProvider,
+  Toolbar,
+} from 'react-native-material-ui';
 import { TextField } from 'react-native-material-textfield';
+import RNGooglePlaces from 'react-native-google-places';
 import { uiTheme } from '../consts/styles';
-import { location } from '../consts/appConsts';
+import { LOCATION } from '../consts/appConsts';
 import TreesService from '../services/TreesService';
 import AddPlaceModal from './AddPlaceModal';
 
@@ -51,17 +63,13 @@ class AddPlace extends Component {
   }
 
   async componentDidMount() {
-    AsyncStorage.getItem('location').then(data => {
-      this.setState({
-        location: JSON.parse(data),
-      });
-    });
-
+    const location = await AsyncStorage.getItem('location');
     const treesTypes = await TreesService.getTreesTypes();
     const treesSorts = await TreesService.getTreesSorts();
     const treesStates = TreesService.getTreesStates();
 
     this.setState({
+      location,
       treesTypes,
       treesSorts,
       treesStates,
@@ -87,16 +95,15 @@ class AddPlace extends Component {
 
         <View>
           <View>
-            <TextField
-              multiline
-              label="Адреса*"
-              value={this.state.place.address.addressString}
-              error={this.state.addressError ? 'Вкажіть адресу' : ''}
-              onChangeText={value => {
-                this.updateState(value, 'addressString', 'address');
-                this.setState({ addressError: false });
-              }}
-            />
+            <TouchableOpacity onPress={() => this.openSearchModal()}>
+              <TextField
+                multiline
+                editable={false}
+                label="Адреса*"
+                value={this.state.place.address.addressString}
+                error={this.state.addressError ? 'Вкажіть адресу' : ''}
+              />
+            </TouchableOpacity>
           </View>
 
           <View>
@@ -210,6 +217,25 @@ class AddPlace extends Component {
     }
   }
 
+  openSearchModal() {
+    RNGooglePlaces.openAutocompleteModal()
+      .then(place => {
+        this.updateState(place.address, 'addressString', 'address');
+        this.setState(update(this.state, {
+          place: {
+            address: {
+              location: {
+                latitude: { $set: place.latitude },
+                longitude: { $set: place.longitude },
+              },
+            },
+          },
+        }));
+        this.setState({ addressError: false });
+      })
+      .catch(error => console.log(error.message));
+  }
+
   toggleModalVisibility() {
     this.setState({ modalVisible: !this.state.modalVisible });
   }
@@ -278,7 +304,7 @@ AddPlace.propTypes = {
 AddPlace.defaultProps = {
   place: {
     title: '',
-    address: { addressString: '', location },
+    address: { addressString: '', location: LOCATION },
     state: { id: null, value: '' },
     type: { id: null, value: '' },
     sort: { id: null, value: '' },

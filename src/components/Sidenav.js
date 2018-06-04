@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Alert, Image } from 'react-native';
 import { NavigationActions } from 'react-navigation';
 import { Avatar, Drawer, ThemeProvider } from 'react-native-material-ui';
-import { mockedUser } from '../consts/mocked_data';
+import { MOCKED_USER } from '../consts/mockedData';
 import { uiTheme } from '../consts/styles';
 
 const merge = require('lodash.merge');
@@ -123,7 +123,7 @@ Sidenav.propTypes = {
 };
 
 Sidenav.defaultProps = {
-  user: mockedUser,
+  user: MOCKED_USER,
 };
 
 export default Sidenav;

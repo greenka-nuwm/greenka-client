@@ -28,6 +28,8 @@ allprojects {
 ext {
     compileSdkVersion = 23
     buildToolsVersion = '25.0.2'
+    googlePlayServicesVersion = '11.6.2'
+    androidMapsUtilsVersion = '0.5+'
 }
 subprojects { subproject ->
     afterEvaluate{

@@ -4,7 +4,7 @@ import { AsyncStorage, View } from 'react-native';
 import MapView from 'react-native-maps';
 import { ActionButton, ThemeProvider, Toolbar } from 'react-native-material-ui';
 import { NavigationActions } from 'react-navigation';
-import { location } from '../consts/appConsts';
+import { LOCATION } from '../consts/appConsts';
 import { uiTheme, mapStyles, containerStyles } from '../consts/styles';
 import LocationService from '../services/LocationService';
 
@@ -13,7 +13,7 @@ class Main extends Component {
     super(props);
 
     this.state = {
-      location,
+      location: LOCATION,
     };
   }
 
