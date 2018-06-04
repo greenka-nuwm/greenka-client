@@ -23,8 +23,8 @@ import { LOCATION } from '../consts/appConsts';
 import TreesService from '../services/TreesService';
 import AddPlaceModal from './AddPlaceModal';
 
-const style = StyleSheet.create({
-  text: {
+const styles = StyleSheet.create({
+  buttonText: {
     color: '#ffffff',
     paddingHorizontal: 10,
     paddingVertical: 5,
@@ -32,9 +32,12 @@ const style = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 5,
   },
-  container: {
+  buttonContainer: {
     backgroundColor: 'rgba(0, 0, 0, 0.7)',
     height: 100,
+  },
+  formContainer: {
+    paddingHorizontal: 20,
   },
 });
 
@@ -113,7 +116,7 @@ class AddPlace extends Component {
             />
 
             <Button
-              style={{ text: style.text, container: style.container }}
+              style={{ text: styles.buttonText, container: styles.buttonContainer }}
               upperCase={false}
               text="Позначити місце на карті*"
               onPress={() => this.toggleModalVisibility()}
@@ -263,7 +266,7 @@ class AddPlace extends Component {
             onRightElementPress={() => this.handleSubmit()}
           />
 
-          <View style={{ paddingHorizontal: 20 }}>
+          <View style={styles.formContainer}>
             {this.getForm()}
           </View>
         </Fragment>

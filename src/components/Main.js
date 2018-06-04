@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { AsyncStorage, View } from 'react-native';
 import MapView from 'react-native-maps';
 import { ActionButton, ThemeProvider, Toolbar } from 'react-native-material-ui';
 import { NavigationActions } from 'react-navigation';
 import { LOCATION } from '../consts/appConsts';
-import { uiTheme, mapStyles, containerStyles } from '../consts/styles';
+import { drawerOverlayStyles, uiTheme } from '../consts/styles';
 import LocationService from '../services/LocationService';
 
 class Main extends Component {
@@ -51,21 +51,30 @@ class Main extends Component {
 
   render() {
     return (
-      <View style={containerStyles}>
-        <ThemeProvider uiTheme={uiTheme}>
+      <ThemeProvider uiTheme={uiTheme}>
+        <Fragment>
           <Toolbar
             leftElement="menu"
             centerElement="Greenka"
             onLeftElementPress={() => this.props.navigation.openDrawer()}
           />
-        </ThemeProvider>
 
-        <MapView style={mapStyles} region={this.state.location} />
+          <View style={drawerOverlayStyles.container}>
+            <MapView
+              style={drawerOverlayStyles.mapContainer}
+              region={this.state.location}
+            />
 
-        <ThemeProvider uiTheme={uiTheme}>
-          <ActionButton onPress={() => this.props.navigation.dispatch(NavigationActions.navigate({ routeName: 'AddPlace' }))} />
-        </ThemeProvider>
-      </View>
+            <View style={drawerOverlayStyles.mapDrawerOverlay} />
+          </View>
+
+          <ActionButton
+            onPress={() => {
+              this.props.navigation.dispatch(NavigationActions.navigate({ routeName: 'AddPlace' }));
+            }}
+          />
+        </Fragment>
+      </ThemeProvider>
     );
   }
 }
