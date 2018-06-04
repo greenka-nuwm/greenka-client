@@ -66,18 +66,28 @@ class AddPlace extends Component {
   }
 
   async componentDidMount() {
-    const location = await AsyncStorage.getItem('location');
     const treesTypes = await TreesService.getTreesTypes();
     const treesSorts = await TreesService.getTreesSorts();
-    const treesStates = TreesService.getTreesStates();
+    const treesStates = await TreesService.getTreesStates();
 
     this.setState({
-      location,
       treesTypes,
       treesSorts,
       treesStates,
       allTreesSorts: treesSorts,
     });
+
+    const location = await AsyncStorage.getItem('location');
+
+    this.setState(update(this.state, {
+      place: {
+        address: {
+          location: {
+            $set: JSON.parse(location),
+          },
+        },
+      },
+    }));
   }
 
   getForm() {
@@ -286,6 +296,8 @@ AddPlace.propTypes = {
       location: PropTypes.shape({
         latitude: PropTypes.number,
         longitude: PropTypes.number,
+        latitudeDelta: PropTypes.number,
+        longitudeDelta: PropTypes.number,
       }),
     }),
     state: {

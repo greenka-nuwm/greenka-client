@@ -13,16 +13,9 @@ class TreesService {
       .map(sort => ({ id: sort.id, value: sort.name, treeType: sort.tree_type }));
   }
 
-  // TODO: integrate with endpoint
-  static getTreesStates() {
-    return [
-      { id: 0, value: 'Здорове' },
-      { id: 1, value: 'Пошкоджене' },
-      { id: 2, value: 'Помирає' },
-      { id: 3, value: 'Напівсухе та сухе' },
-      { id: 4, value: 'Топінг' },
-      { id: 5, value: 'Вражене омелою' },
-    ];
+  static async getTreesStates() {
+    return (await axios.get('/trees/states')).data
+      .map(state => ({ id: state.id, value: state.name }));
   }
 
   static async create(tree) {
