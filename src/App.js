@@ -30,6 +30,7 @@ const App = createDrawerNavigator({
   },
 }, {
   contentComponent: Sidenav,
+  backBehavior: 'initialRoute',
 });
 
 export default App;

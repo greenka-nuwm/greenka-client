@@ -40,6 +40,7 @@ class AddPlaceModal extends Component {
           onLeftElementPress={this.props.onClose}
           onRightElementPress={() => this.props.onSubmit(this.state)}
         />
+
         {this.state.addressString !== '' && <Subheader text={this.state.addressString} />}
 
         <MapView

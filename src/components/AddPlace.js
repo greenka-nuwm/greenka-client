@@ -18,6 +18,7 @@ import {
 } from 'react-native-material-ui';
 import { TextField } from 'react-native-material-textfield';
 import RNGooglePlaces from 'react-native-google-places';
+import { NavigationActions } from 'react-navigation';
 import { uiTheme } from '../consts/styles';
 import { LOCATION } from '../consts/appConsts';
 import TreesService from '../services/TreesService';
@@ -133,7 +134,7 @@ class AddPlace extends Component {
             />
 
             <Modal
-              animationType="slide"
+              animationType="fade"
               visible={this.state.modalVisible}
               onRequestClose={() => this.toggleModalVisibility()}
             >
@@ -269,10 +270,12 @@ class AddPlace extends Component {
       <ThemeProvider uiTheme={uiTheme}>
         <Fragment>
           <Toolbar
-            leftElement="menu"
+            leftElement="close"
             centerElement="Додати місце"
             rightElement={this.state.addressString !== '' ? 'send' : ''}
-            onLeftElementPress={() => this.props.navigation.openDrawer()}
+            onLeftElementPress={() => {
+              this.props.navigation.dispatch(NavigationActions.navigate({ routeName: 'Home' }));
+            }}
             onRightElementPress={() => this.handleSubmit()}
           />
 
@@ -287,7 +290,7 @@ class AddPlace extends Component {
 
 AddPlace.propTypes = {
   navigation: PropTypes.shape({
-    openDrawer: PropTypes.func.isRequired,
+    dispatch: PropTypes.func.isRequired,
   }).isRequired,
   place: PropTypes.shape({
     title: PropTypes.string,

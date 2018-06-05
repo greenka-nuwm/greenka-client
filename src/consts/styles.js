@@ -12,7 +12,7 @@ export const uiTheme = {
   },
   toolbar: {
     container: {
-      height: 50,
+      height: 56,
     },
   },
 };
