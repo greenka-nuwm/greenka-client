@@ -1,13 +1,13 @@
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { View } from 'react-native';
 import MapView from 'react-native-maps';
 import { Subheader, Toolbar } from 'react-native-material-ui';
 import update from 'immutability-helper';
-import { containerStyles, mapStyles } from '../consts/styles';
-import LocationService from '../services/LocationService';
+import { containerStyles, mapStyles } from '../../consts/styles';
+import LocationService from '../../services/LocationService';
 
-class AddPlaceModal extends Component {
+class MapModal extends PureComponent {
   constructor(props) {
     super(props);
 
@@ -18,15 +18,13 @@ class AddPlaceModal extends Component {
     const { coordinate } = event.nativeEvent;
 
     LocationService.geocodePosition(coordinate).then(address => {
-      const newState = update(this.state, {
+      this.setState(update(this.state, {
         addressString: { $set: address.formattedAddress },
         location: {
           latitude: { $set: coordinate.latitude },
           longitude: { $set: coordinate.longitude },
         },
-      });
-
-      this.setState(newState);
+      }));
     });
   }
 
@@ -57,7 +55,7 @@ class AddPlaceModal extends Component {
   }
 }
 
-AddPlaceModal.propTypes = {
+MapModal.propTypes = {
   address: PropTypes.shape({
     addressString: PropTypes.string.isRequired,
     location: PropTypes.shape({
@@ -71,4 +69,4 @@ AddPlaceModal.propTypes = {
   onSubmit: PropTypes.func.isRequired,
 };
 
-export default AddPlaceModal;
+export default MapModal;

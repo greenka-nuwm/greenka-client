@@ -2,7 +2,7 @@ import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { ThemeProvider, Toolbar } from 'react-native-material-ui';
 import { NavigationActions } from 'react-navigation';
-import { uiTheme } from '../consts/styles';
+import { uiTheme } from '../../consts/styles';
 
 const Places = props => (
   <ThemeProvider uiTheme={uiTheme}>

@@ -9,6 +9,7 @@ const Screen = {
 export const uiTheme = {
   palette: {
     primaryColor: COLOR.green800,
+    accentColor: COLOR.amber900,
   },
   toolbar: {
     container: {

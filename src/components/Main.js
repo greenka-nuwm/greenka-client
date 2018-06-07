@@ -72,6 +72,11 @@ class Main extends Component {
             onPress={() => {
               this.props.navigation.dispatch(NavigationActions.navigate({ routeName: 'AddPlace' }));
             }}
+            style={{
+              container: {
+                elevation: 2,
+              },
+            }}
           />
         </Fragment>
       </ThemeProvider>
