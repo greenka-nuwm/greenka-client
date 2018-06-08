@@ -1,15 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { View, ScrollView, StyleSheet } from 'react-native';
+import { View, ScrollView } from 'react-native';
 import { Dropdown } from 'react-native-material-dropdown';
 import { TextField } from 'react-native-material-textfield';
+import { formContainer } from '../../consts/styles';
 import AddressField from './AddressField';
-
-const styles = StyleSheet.create({
-  formContainer: {
-    paddingHorizontal: 20,
-  },
-});
 
 class ProblemForm extends Component {
   constructor(props) {
@@ -77,7 +72,7 @@ class ProblemForm extends Component {
 
   render() {
     return (
-      <View style={styles.formContainer}>
+      <View style={formContainer}>
         {this.getForm()}
       </View>
     );

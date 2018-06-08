@@ -44,3 +44,7 @@ export const containerStyles = {
   ...StyleSheet.absoluteFillObject,
   justifyContent: 'space-between',
 };
+
+export const formContainer = {
+  paddingHorizontal: 20,
+};
