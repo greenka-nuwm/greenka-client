@@ -11,11 +11,21 @@ import com.facebook.soloader.SoLoader;
 import com.airbnb.android.react.maps.MapsPackage;
 import com.devfd.RNGeocoder.RNGeocoderPackage;
 import com.arttitude360.reactnative.rngoogleplaces.RNGooglePlacesPackage;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookSdk;
+import com.facebook.reactnative.androidsdk.FBSDKPackage;
+import com.facebook.appevents.AppEventsLogger;
 
 import java.util.Arrays;
 import java.util.List;
 
 public class MainApplication extends Application implements ReactApplication {
+
+  private static CallbackManager mCallbackManager = CallbackManager.Factory.create();
+
+  protected static CallbackManager getCallbackManager() {
+    return mCallbackManager;
+  }
 
   private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
     @Override
@@ -30,7 +40,8 @@ public class MainApplication extends Application implements ReactApplication {
           new VectorIconsPackage(),
           new MapsPackage(),
           new RNGeocoderPackage(),
-          new RNGooglePlacesPackage()
+          new RNGooglePlacesPackage(),
+          new FBSDKPackage(mCallbackManager)
       );
     }
 

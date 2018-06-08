@@ -4,6 +4,7 @@ buildscript {
     repositories {
         jcenter()
         google()
+        mavenCentral()
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.1.0'
@@ -22,12 +23,18 @@ allprojects {
             url "$rootDir/../node_modules/react-native/android"
         }
         google()
+
+        configurations.all {
+            resolutionStrategy {
+                force 'com.facebook.android:facebook-android-sdk:4.28.0'
+            }
+        }
     }
 }
 
 ext {
-    compileSdkVersion = 23
-    buildToolsVersion = '25.0.2'
+    compileSdkVersion = 26
+    buildToolsVersion = '26.0.1'
     googlePlayServicesVersion = '11.6.2'
     androidMapsUtilsVersion = '0.5+'
 }
