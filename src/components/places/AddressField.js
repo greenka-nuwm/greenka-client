@@ -24,20 +24,10 @@ const styles = StyleSheet.create({
 });
 
 class AddressField extends Component {
-  static getDerivedStateFromProps(nextProps, prevState) {
-    if (prevState.showAddressError !== nextProps.showAddressError) {
-      return { showAddressError: nextProps.showAddressError };
-    }
-
-    return {};
-  }
-
   constructor(props) {
     super(props);
 
     this.state = {
-      address: this.props.address,
-      showAddressError: this.props.showAddressError,
       isModalVisible: false,
     };
   }
@@ -45,22 +35,21 @@ class AddressField extends Component {
   openSearchModal() {
     RNGooglePlaces.openAutocompleteModal()
       .then(place => {
-        this.setState(update(this.state, {
-          address: {
-            addressString: { $set: place.address },
-            location: {
-              latitude: { $set: place.latitude },
-              longitude: { $set: place.longitude },
-            },
+        const address = update(this.props.address, {
+          addressString: { $set: place.address },
+          location: {
+            latitude: { $set: place.latitude },
+            longitude: { $set: place.longitude },
           },
-          showAddressError: { $set: false },
-        }));
+        });
+
+        this.props.onAddressChange(address);
       })
       .catch(error => console.log(error.message));
   }
 
   handleModalSubmit(address) {
-    this.setState({ address, showAddressError: false });
+    this.props.onAddressChange(address);
     this.toggleModalVisibility();
   }
 
@@ -77,8 +66,8 @@ class AddressField extends Component {
               multiline
               editable={false}
               label="Адреса*"
-              value={this.state.address.addressString}
-              error={this.state.showAddressError ? 'Вкажіть адресу' : ''}
+              value={this.props.address.addressString}
+              error={this.props.showAddressError ? 'Вкажіть адресу' : ''}
             />
           </TouchableOpacity>
         </View>
@@ -86,7 +75,7 @@ class AddressField extends Component {
         <View>
           <MapView
             style={StyleSheet.absoluteFillObject}
-            region={this.state.address.location}
+            region={this.props.address.location}
           />
 
           <Button
@@ -102,7 +91,7 @@ class AddressField extends Component {
             onRequestClose={() => this.toggleModalVisibility()}
           >
             <MapModal
-              address={this.state.address}
+              address={this.props.address}
               onClose={() => this.toggleModalVisibility()}
               onSubmit={address => this.handleModalSubmit(address)}
             />
@@ -124,6 +113,7 @@ AddressField.propTypes = {
     }),
   }).isRequired,
   showAddressError: PropTypes.bool.isRequired,
+  onAddressChange: PropTypes.func.isRequired,
 };
 
 export default AddressField;

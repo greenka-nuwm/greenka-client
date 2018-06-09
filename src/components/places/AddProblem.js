@@ -16,6 +16,7 @@ class AddProblem extends Component {
 
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleNameChange = this.handleNameChange.bind(this);
+    this.handleAddressChange = this.handleAddressChange.bind(this);
     this.handleTypeChange = this.handleTypeChange.bind(this);
     this.handleDescriptionChange = this.handleDescriptionChange.bind(this);
 
@@ -55,6 +56,10 @@ class AddProblem extends Component {
 
   handleNameChange(name) {
     this.setState({ name, showNameError: false });
+  }
+
+  handleAddressChange(address) {
+    this.setState({ address, showAddressError: false });
   }
 
   handleTypeChange(value, index) {
@@ -101,6 +106,7 @@ class AddProblem extends Component {
             <AddressField
               address={this.state.address}
               showAddressError={this.state.showAddressError}
+              onAddressChange={this.handleAddressChange}
             />
 
             <View>
