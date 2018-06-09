@@ -60,7 +60,7 @@ class AddressField extends Component {
   }
 
   handleModalSubmit(address) {
-    this.setState({ address });
+    this.setState({ address, showAddressError: false });
     this.toggleModalVisibility();
   }
 

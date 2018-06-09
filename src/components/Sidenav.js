@@ -72,12 +72,12 @@ const Sidenav = ({ navigation, user }) => {
               onPress: () => navigation.dispatch(NavigationActions.navigate({ routeName: 'Places' })),
             },
             {
-              icon: 'add-location',
+              icon: 'local-florist',
               value: 'Внести дерево',
               onPress: () => navigation.dispatch(NavigationActions.navigate({ routeName: 'AddTree' })),
             },
             {
-              icon: 'add-location',
+              icon: 'report-problem',
               value: 'Описати проблему',
               onPress: () => navigation.dispatch(NavigationActions.navigate({ routeName: 'AddProblem' })),
             },

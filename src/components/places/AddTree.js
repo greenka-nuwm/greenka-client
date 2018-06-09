@@ -14,7 +14,12 @@ class AddTree extends Component {
   constructor(props) {
     super(props);
 
+    this.handleSubmit = this.handleSubmit.bind(this);
     this.handleAddressChange = this.handleAddressChange.bind(this);
+    this.handleStateChange = this.handleStateChange.bind(this);
+    this.handleTypeChange = this.handleTypeChange.bind(this);
+    this.handleSortChange = this.handleSortChange.bind(this);
+    this.handleDescriptionChange = this.handleDescriptionChange.bind(this);
 
     this.state = {
       address: this.props.address,
@@ -81,6 +86,29 @@ class AddTree extends Component {
     this.setState({ address, showAddressError: false });
   }
 
+  handleStateChange(value, index) {
+    this.setState({
+      state: { id: index, value },
+      showStateError: false,
+    });
+  }
+
+  handleTypeChange(value, index) {
+    this.setState({
+      type: { id: index, value },
+      sort: { id: null, value: '' },
+      sorts: this.state.allSorts.filter(sort => sort.treeType === (index + 1)),
+    });
+  }
+
+  handleSortChange(value, index) {
+    this.setState({ sort: { id: index, value } });
+  }
+
+  handleDescriptionChange(description) {
+    this.setState({ description });
+  }
+
   render() {
     return (
       <ThemeProvider uiTheme={uiTheme}>
@@ -92,7 +120,7 @@ class AddTree extends Component {
             onLeftElementPress={() => {
               this.props.navigation.dispatch(NavigationActions.navigate({ routeName: 'Home' }));
             }}
-            onRightElementPress={() => this.handleSubmit()}
+            onRightElementPress={this.handleSubmit}
             style={{
               container: {
                 elevation: 0,
@@ -113,12 +141,7 @@ class AddTree extends Component {
                 value={this.state.state.value}
                 error={this.state.showStateError ? 'Вкажіть стан дерева' : ''}
                 data={this.state.states}
-                onChangeText={(value, index) => {
-                  this.setState({
-                    state: { id: index, value },
-                    showStateError: false,
-                  });
-                }}
+                onChangeText={this.handleStateChange}
               />
             </View>
 
@@ -127,13 +150,7 @@ class AddTree extends Component {
                 label="Вид дерева"
                 value={this.state.type.value}
                 data={this.state.types}
-                onChangeText={(value, index) => {
-                  this.setState({
-                    type: { id: index, value },
-                    sort: { id: null, value: '' },
-                    sorts: this.state.allSorts.filter(sort => sort.treeType === (index + 1)),
-                  });
-                }}
+                onChangeText={this.handleTypeChange}
               />
             </View>
 
@@ -142,7 +159,7 @@ class AddTree extends Component {
                 label="Порода дерева"
                 value={this.state.sort.value}
                 data={this.state.sorts}
-                onChangeText={(value, index) => this.setState({ sort: { id: index, value } })}
+                onChangeText={this.handleSortChange}
               />
             </View>
 
@@ -151,7 +168,7 @@ class AddTree extends Component {
                 multiline
                 label="Додатковий опис"
                 value={this.state.description}
-                onChangeText={description => this.setState({ description })}
+                onChangeText={this.handleDescriptionChange}
               />
             </View>
           </ScrollView>

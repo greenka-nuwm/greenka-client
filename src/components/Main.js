@@ -4,8 +4,7 @@ import { AsyncStorage, View, StyleSheet } from 'react-native';
 import ActionButton from 'react-native-action-button';
 import MapView from 'react-native-maps';
 import { COLOR, ThemeProvider, Toolbar } from 'react-native-material-ui';
-import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
-import Entypo from 'react-native-vector-icons/Entypo';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 import { NavigationActions } from 'react-navigation';
 import { LOCATION } from '../consts/appConsts';
 import { drawerOverlayStyles, uiTheme } from '../consts/styles';
@@ -89,7 +88,7 @@ class Main extends Component {
                   .dispatch(NavigationActions.navigate({ routeName: 'AddTree' }));
               }}
             >
-              <Entypo name="tree" style={styles.actionButtonIcon} />
+              <Icon name="local-florist" style={styles.actionButtonIcon} />
             </ActionButton.Item>
 
             <ActionButton.Item
@@ -101,7 +100,7 @@ class Main extends Component {
                   .dispatch(NavigationActions.navigate({ routeName: 'AddProblem' }));
               }}
             >
-              <MaterialIcon name="report-problem" style={styles.actionButtonIcon} />
+              <Icon name="report-problem" style={styles.actionButtonIcon} />
             </ActionButton.Item>
           </ActionButton>
         </Fragment>

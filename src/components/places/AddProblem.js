@@ -14,6 +14,11 @@ class AddProblem extends Component {
   constructor(props) {
     super(props);
 
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleNameChange = this.handleNameChange.bind(this);
+    this.handleTypeChange = this.handleTypeChange.bind(this);
+    this.handleDescriptionChange = this.handleDescriptionChange.bind(this);
+
     this.state = {
       name: this.props.name,
       address: this.props.address,
@@ -48,6 +53,21 @@ class AddProblem extends Component {
     }
   }
 
+  handleNameChange(name) {
+    this.setState({ name, showNameError: false });
+  }
+
+  handleTypeChange(value, index) {
+    this.setState({
+      type: { id: index, value },
+      showTypeError: false,
+    });
+  }
+
+  handleDescriptionChange(description) {
+    this.setState({ description });
+  }
+
   render() {
     return (
       <ThemeProvider uiTheme={uiTheme}>
@@ -59,7 +79,7 @@ class AddProblem extends Component {
             onLeftElementPress={() => {
               this.props.navigation.dispatch(NavigationActions.navigate({ routeName: 'Home' }));
             }}
-            onRightElementPress={() => this.handleSubmit()}
+            onRightElementPress={this.handleSubmit}
             style={{
               container: {
                 elevation: 0,
@@ -74,10 +94,7 @@ class AddProblem extends Component {
                 label="Назва*"
                 value={this.state.name}
                 error={this.state.showNameError ? 'Вкажіть ім\'я' : ''}
-                onChangeText={value => {
-                  this.updateState(value, 'name');
-                  this.setState({ showNameError: false });
-                }}
+                onChangeText={this.handleNameChange}
               />
             </View>
 
@@ -92,12 +109,7 @@ class AddProblem extends Component {
                 value={this.state.type.value}
                 error={this.state.showTypeError ? 'Вкажіть тип проблеми' : ''}
                 data={this.state.types}
-                onChangeText={(value, index) => {
-                  this.setState({
-                    type: { id: index, value },
-                    showTypeError: false,
-                  });
-                }}
+                onChangeText={this.handleTypeChange}
               />
             </View>
 
@@ -106,7 +118,7 @@ class AddProblem extends Component {
                 multiline
                 label="Додатковий опис"
                 value={this.state.description}
-                onChangeText={description => this.setState({ description })}
+                onChangeText={this.handleDescriptionChange}
               />
             </View>
           </ScrollView>
