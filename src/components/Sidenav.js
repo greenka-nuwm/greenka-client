@@ -73,8 +73,13 @@ const Sidenav = ({ navigation, user }) => {
             },
             {
               icon: 'add-location',
-              value: 'Додати місце',
-              onPress: () => navigation.dispatch(NavigationActions.navigate({ routeName: 'AddPlace' })),
+              value: 'Внести дерево',
+              onPress: () => navigation.dispatch(NavigationActions.navigate({ routeName: 'AddTree' })),
+            },
+            {
+              icon: 'add-location',
+              value: 'Описати проблему',
+              onPress: () => navigation.dispatch(NavigationActions.navigate({ routeName: 'AddProblem' })),
             },
           ]}
         />

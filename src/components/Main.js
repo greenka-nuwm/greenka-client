@@ -1,12 +1,23 @@
 import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
-import { AsyncStorage, View } from 'react-native';
+import { AsyncStorage, View, StyleSheet } from 'react-native';
+import ActionButton from 'react-native-action-button';
 import MapView from 'react-native-maps';
-import { ActionButton, ThemeProvider, Toolbar } from 'react-native-material-ui';
+import { COLOR, ThemeProvider, Toolbar } from 'react-native-material-ui';
+import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
+import Entypo from 'react-native-vector-icons/Entypo';
 import { NavigationActions } from 'react-navigation';
 import { LOCATION } from '../consts/appConsts';
 import { drawerOverlayStyles, uiTheme } from '../consts/styles';
 import LocationService from '../services/LocationService';
+
+const styles = StyleSheet.create({
+  actionButtonIcon: {
+    fontSize: 20,
+    height: 22,
+    color: 'white',
+  },
+});
 
 class Main extends Component {
   constructor(props) {
@@ -68,16 +79,31 @@ class Main extends Component {
             <View style={drawerOverlayStyles.mapDrawerOverlay} />
           </View>
 
-          <ActionButton
-            onPress={() => {
-              this.props.navigation.dispatch(NavigationActions.navigate({ routeName: 'AddPlace' }));
-            }}
-            style={{
-              container: {
-                elevation: 2,
-              },
-            }}
-          />
+          <ActionButton buttonColor={uiTheme.palette.accentColor}>
+            <ActionButton.Item
+              buttonColor={COLOR.green300}
+              size={50}
+              title="Внести дерево"
+              onPress={() => {
+                this.props.navigation
+                  .dispatch(NavigationActions.navigate({ routeName: 'AddTree' }));
+              }}
+            >
+              <Entypo name="tree" style={styles.actionButtonIcon} />
+            </ActionButton.Item>
+
+            <ActionButton.Item
+              buttonColor={COLOR.red300}
+              size={50}
+              title="Описати проблему"
+              onPress={() => {
+                this.props.navigation
+                  .dispatch(NavigationActions.navigate({ routeName: 'AddProblem' }));
+              }}
+            >
+              <MaterialIcon name="report-problem" style={styles.actionButtonIcon} />
+            </ActionButton.Item>
+          </ActionButton>
         </Fragment>
       </ThemeProvider>
     );

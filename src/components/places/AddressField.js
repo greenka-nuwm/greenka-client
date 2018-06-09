@@ -24,6 +24,14 @@ const styles = StyleSheet.create({
 });
 
 class AddressField extends Component {
+  static getDerivedStateFromProps(nextProps, prevState) {
+    if (prevState.showAddressError !== nextProps.showAddressError) {
+      return { showAddressError: nextProps.showAddressError };
+    }
+
+    return {};
+  }
+
   constructor(props) {
     super(props);
 
