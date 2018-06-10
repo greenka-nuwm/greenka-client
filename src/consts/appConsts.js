@@ -5,4 +5,11 @@ export const LOCATION = {
   longitudeDelta: 18,
 };
 
-export default LOCATION;
+export const ACTIVE_FILTERS = [
+  'healthy',
+  'broken',
+  'dying',
+  'dry',
+  'toping',
+  'mistletoe',
+];

@@ -6,9 +6,10 @@ import MapView from 'react-native-maps';
 import { COLOR, ThemeProvider, Toolbar } from 'react-native-material-ui';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { NavigationActions } from 'react-navigation';
-import { LOCATION } from '../consts/appConsts';
+import { ACTIVE_FILTERS, LOCATION } from '../consts/appConsts';
 import { drawerOverlayStyles, uiTheme } from '../consts/styles';
 import LocationService from '../services/LocationService';
+import MapFilters from './MapFilters';
 
 const styles = StyleSheet.create({
   actionButtonIcon: {
@@ -22,8 +23,11 @@ class Main extends Component {
   constructor(props) {
     super(props);
 
+    this.onTopRowTabPress = this.onTopRowTabPress.bind(this);
+
     this.state = {
       location: LOCATION,
+      activeFilters: ACTIVE_FILTERS,
     };
   }
 
@@ -33,10 +37,25 @@ class Main extends Component {
         location: JSON.parse(data),
       });
     });
+    AsyncStorage.getItem('activeFilters').then(data => {
+      this.setState({
+        activeFilters: JSON.parse(data),
+      });
+    });
 
     if (LocationService.getLocationPermission()) {
       this.setLocationToState();
     }
+  }
+
+  onTopRowTabPress(newTab) {
+    const newTabs = this.state.activeFilters.includes(newTab.key)
+      ? this.state.activeFilters.filter(key => key !== newTab.key)
+      : [...this.state.activeFilters, newTab.key];
+
+    this.setState({ activeFilters: newTabs });
+
+    AsyncStorage.setItem('activeFilters', JSON.stringify(newTabs));
   }
 
   setLocationToState() {
@@ -78,31 +97,47 @@ class Main extends Component {
             <View style={drawerOverlayStyles.mapDrawerOverlay} />
           </View>
 
-          <ActionButton buttonColor={uiTheme.palette.accentColor}>
-            <ActionButton.Item
-              buttonColor={COLOR.green300}
-              size={50}
-              title="Внести дерево"
-              onPress={() => {
-                this.props.navigation
-                  .dispatch(NavigationActions.navigate({ routeName: 'AddTree' }));
-              }}
+          <View
+            style={{
+              flex: 1,
+              marginBottom: -10,
+              marginRight: -10,
+            }}
+          >
+            <ActionButton
+              buttonColor={uiTheme.palette.accentColor}
+              fixNativeFeedbackRadiusss
             >
-              <Icon name="local-florist" style={styles.actionButtonIcon} />
-            </ActionButton.Item>
+              <ActionButton.Item
+                buttonColor={COLOR.green300}
+                size={50}
+                title="Внести дерево"
+                onPress={() => {
+                  this.props.navigation
+                    .dispatch(NavigationActions.navigate({ routeName: 'AddTree' }));
+                }}
+              >
+                <Icon name="local-florist" style={styles.actionButtonIcon} />
+              </ActionButton.Item>
 
-            <ActionButton.Item
-              buttonColor={COLOR.red300}
-              size={50}
-              title="Описати проблему"
-              onPress={() => {
-                this.props.navigation
-                  .dispatch(NavigationActions.navigate({ routeName: 'AddProblem' }));
-              }}
-            >
-              <Icon name="report-problem" style={styles.actionButtonIcon} />
-            </ActionButton.Item>
-          </ActionButton>
+              <ActionButton.Item
+                buttonColor={COLOR.red300}
+                size={50}
+                title="Описати проблему"
+                onPress={() => {
+                  this.props.navigation
+                    .dispatch(NavigationActions.navigate({ routeName: 'AddProblem' }));
+                }}
+              >
+                <Icon name="report-problem" style={styles.actionButtonIcon} />
+              </ActionButton.Item>
+            </ActionButton>
+          </View>
+
+          <MapFilters
+            activeFilters={this.state.activeFilters}
+            onActiveTabsChange={this.onTopRowTabPress}
+          />
         </Fragment>
       </ThemeProvider>
     );
