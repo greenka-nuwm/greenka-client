@@ -1,8 +1,14 @@
 import axios from 'axios';
+import { ACTIVE_FILTERS } from '../consts/appConsts';
 
 // TODO: error handling
 
 class TreesService {
+  static async getAllTrees() {
+    return (await axios.get('/trees/all/')).data
+      .map(tree => ({ ...tree, tree_state: ACTIVE_FILTERS[tree.tree_state] }));
+  }
+
   static async getTreesTypes() {
     return (await axios.get('/trees/types/')).data
       .map(type => ({ id: type.id, value: type.name }));

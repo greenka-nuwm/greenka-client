@@ -4,11 +4,13 @@ import { AsyncStorage, View, StyleSheet } from 'react-native';
 import ActionButton from 'react-native-action-button';
 import MapView from 'react-native-maps';
 import { COLOR, ThemeProvider, Toolbar } from 'react-native-material-ui';
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
+import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { NavigationActions } from 'react-navigation';
 import { ACTIVE_FILTERS, LOCATION } from '../consts/appConsts';
 import { drawerOverlayStyles, uiTheme } from '../consts/styles';
 import LocationService from '../services/LocationService';
+import TreesService from '../services/TreesService';
 import MapFilters from './MapFilters';
 
 const styles = StyleSheet.create({
@@ -28,54 +30,76 @@ class Main extends Component {
     this.state = {
       location: LOCATION,
       activeFilters: ACTIVE_FILTERS,
+      icons: [],
+      trees: [],
+      allTrees: [],
     };
   }
 
-  componentDidMount() {
-    AsyncStorage.getItem('location').then(data => {
-      this.setState({
-        location: JSON.parse(data),
-      });
-    });
-    AsyncStorage.getItem('activeFilters').then(data => {
-      this.setState({
-        activeFilters: JSON.parse(data),
-      });
-    });
+  async componentDidMount() {
+    const location = JSON.parse(await AsyncStorage.getItem('location'));
+
+    this.setState({ location });
 
     if (LocationService.getLocationPermission()) {
-      this.setLocationToState();
+      await this.setLocationToState();
     }
+
+    const activeFilters = JSON.parse(await AsyncStorage.getItem('activeFilters'));
+
+    const healthy = await MaterialCommunityIcon.getImageSource('tree', 26, COLOR.green600);
+    const broken = await MaterialCommunityIcon.getImageSource('tree', 26, COLOR.yellow600);
+    const dying = await MaterialCommunityIcon.getImageSource('tree', 26, COLOR.red600);
+    const dry = await MaterialCommunityIcon.getImageSource('tree', 26, COLOR.black);
+    const toping = await MaterialCommunityIcon.getImageSource('tree', 26, COLOR.purple600);
+    const mistletoe = await MaterialCommunityIcon.getImageSource('tree', 26, COLOR.blue600);
+
+    const trees = await TreesService.getAllTrees();
+
+    this.setState({
+      icons: {
+        healthy,
+        broken,
+        dying,
+        dry,
+        toping,
+        mistletoe,
+      },
+      activeFilters,
+      trees,
+      allTrees: trees,
+    });
   }
 
   onTopRowTabPress(newTab) {
     const newTabs = this.state.activeFilters.includes(newTab.key)
       ? this.state.activeFilters.filter(key => key !== newTab.key)
       : [...this.state.activeFilters, newTab.key];
+    const trees = this.state.allTrees.filter(tree => newTabs.includes(tree.tree_state));
 
-    this.setState({ activeFilters: newTabs });
+    this.setState({ activeFilters: newTabs, trees });
 
     AsyncStorage.setItem('activeFilters', JSON.stringify(newTabs));
   }
 
-  setLocationToState() {
-    LocationService.getCurrentPosition().then(position => {
-      this.setState({
-        location: {
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude,
-          latitudeDelta: 0.01,
-          longitudeDelta: 0.01,
-        },
-      });
+  async setLocationToState() {
+    const position = await LocationService.getCurrentPosition();
 
-      AsyncStorage.setItem('location', JSON.stringify({
+    this.setState({
+      location: {
         latitude: position.coords.latitude,
         longitude: position.coords.longitude,
         latitudeDelta: 0.01,
         longitudeDelta: 0.01,
-      }));
+      },
     });
+
+    AsyncStorage.setItem('location', JSON.stringify({
+      latitude: position.coords.latitude,
+      longitude: position.coords.longitude,
+      latitudeDelta: 0.01,
+      longitudeDelta: 0.01,
+    }));
   }
 
   render() {
@@ -92,7 +116,18 @@ class Main extends Component {
             <MapView
               style={drawerOverlayStyles.mapContainer}
               region={this.state.location}
-            />
+            >
+              {this.state.trees.map(tree => (
+                <MapView.Marker
+                  key={`marker-${tree.id}`}
+                  coordinate={{
+                    longitude: tree.longitude,
+                    latitude: tree.latitude,
+                  }}
+                  image={this.state.icons[tree.tree_state]}
+                />
+              ))}
+            </MapView>
 
             <View style={drawerOverlayStyles.mapDrawerOverlay} />
           </View>
@@ -117,7 +152,7 @@ class Main extends Component {
                     .dispatch(NavigationActions.navigate({ routeName: 'AddTree' }));
                 }}
               >
-                <Icon name="local-florist" style={styles.actionButtonIcon} />
+                <MaterialIcon name="local-florist" style={styles.actionButtonIcon} />
               </ActionButton.Item>
 
               <ActionButton.Item
@@ -129,7 +164,7 @@ class Main extends Component {
                     .dispatch(NavigationActions.navigate({ routeName: 'AddProblem' }));
                 }}
               >
-                <Icon name="report-problem" style={styles.actionButtonIcon} />
+                <MaterialIcon name="report-problem" style={styles.actionButtonIcon} />
               </ActionButton.Item>
             </ActionButton>
           </View>
