@@ -1,9 +1,10 @@
 import React, { Fragment, Component } from 'react';
 import PropTypes from 'prop-types';
-import { AsyncStorage, ScrollView, View } from 'react-native';
+import { Alert, AsyncStorage, ScrollView, View } from 'react-native';
 import { Dropdown } from 'react-native-material-dropdown';
 import { TextField } from 'react-native-material-textfield';
 import { ThemeProvider, Toolbar } from 'react-native-material-ui';
+import Snackbar from 'react-native-snackbar';
 import { NavigationActions } from 'react-navigation';
 import { formContainer, uiTheme } from '../../consts/styles';
 import { LOCATION } from '../../consts/appConsts';
@@ -53,7 +54,7 @@ class AddTree extends Component {
     });
   }
 
-  handleSubmit() {
+  async handleSubmit() {
     const showAddressError = this.state.address.addressString === '';
     const showStateError = this.state.state.value === '';
 
@@ -78,7 +79,35 @@ class AddTree extends Component {
         tree.description = this.state.description;
       }
 
-      TreesService.create(tree);
+      try {
+        await TreesService.create(tree);
+
+        this.setState({
+          address: this.props.address,
+          state: this.props.state,
+          type: this.props.type,
+          sort: this.props.sort,
+          description: this.props.description,
+          showAddressError: false,
+          showStateError: false,
+        });
+
+        Snackbar.show({
+          title: 'Дерево внесено',
+          duration: Snackbar.LENGTH_SHORT,
+        });
+      } catch (e) {
+        Alert.alert(
+          '',
+          'Не вдалось внести дерево',
+          [
+            {
+              text: 'Ок',
+              style: 'cancel',
+            },
+          ],
+        );
+      }
     }
   }
 

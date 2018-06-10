@@ -104,13 +104,13 @@ class AddressField extends Component {
 
 AddressField.propTypes = {
   address: PropTypes.shape({
-    addressString: PropTypes.string,
+    addressString: PropTypes.string.isRequired,
     location: PropTypes.shape({
-      latitude: PropTypes.number,
-      longitude: PropTypes.number,
-      latitudeDelta: PropTypes.number,
-      longitudeDelta: PropTypes.number,
-    }),
+      latitude: PropTypes.number.isRequired,
+      longitude: PropTypes.number.isRequired,
+      latitudeDelta: PropTypes.number.isRequired,
+      longitudeDelta: PropTypes.number.isRequired,
+    }).isRequired,
   }).isRequired,
   showAddressError: PropTypes.bool.isRequired,
   onAddressChange: PropTypes.func.isRequired,

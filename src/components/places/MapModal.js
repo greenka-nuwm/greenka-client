@@ -39,7 +39,11 @@ class MapModal extends PureComponent {
           onRightElementPress={() => this.props.onSubmit(this.state)}
         />
 
-        {this.state.addressString !== '' && <Subheader text={this.state.addressString} />}
+        {
+          this.state.addressString !== ''
+          && this.state.addressString != null
+          && <Subheader text={this.state.addressString} />
+        }
 
         <MapView
           style={mapStyles}
