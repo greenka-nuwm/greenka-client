@@ -1,11 +1,6 @@
 import { StyleSheet, Dimensions } from 'react-native';
 import { COLOR } from 'react-native-material-ui';
 
-const Screen = {
-  width: Dimensions.get('window').width,
-  height: Dimensions.get('window').height,
-};
-
 export const uiTheme = {
   palette: {
     primaryColor: COLOR.green800,
@@ -19,13 +14,8 @@ export const uiTheme = {
 };
 
 export const drawerOverlayStyles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  mapContainer: {
-    width: Screen.width,
-    height: Dimensions.get('window').height,
-  },
+  container: StyleSheet.absoluteFillObject,
+  mapContainer: StyleSheet.absoluteFillObject,
   mapDrawerOverlay: {
     position: 'absolute',
     left: 0,
