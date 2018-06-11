@@ -6,10 +6,10 @@ import { TextField } from 'react-native-material-textfield';
 import { ThemeProvider, Toolbar } from 'react-native-material-ui';
 import Snackbar from 'react-native-snackbar';
 import { NavigationActions } from 'react-navigation';
-import { formContainer, uiTheme } from '../../consts/styles';
-import { LOCATION } from '../../consts/appConsts';
-import TreesService from '../../services/TreesService';
-import AddressField from './AddressField';
+import { formContainer, uiTheme } from '../../../consts/styles';
+import { LOCATION } from '../../../consts/appConsts';
+import TreesService from '../../../services/TreesService';
+import AddressField from '../AddressField';
 
 class AddTree extends Component {
   constructor(props) {

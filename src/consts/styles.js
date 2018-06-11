@@ -11,6 +11,11 @@ export const uiTheme = {
       height: 56,
     },
   },
+  listItem: {
+    container: {
+      backgroundColor: 'transparent',
+    },
+  },
 };
 
 export const drawerOverlayStyles = StyleSheet.create({

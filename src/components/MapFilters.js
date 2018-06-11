@@ -9,45 +9,7 @@ import {
 } from 'react-native-material-ui';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { uiTheme } from '../consts/styles';
-
-const tabs = [
-  {
-    key: 'healthy',
-    icon: 'tree',
-    label: 'Здорові',
-    color: COLOR.green600,
-  },
-  {
-    key: 'broken',
-    icon: 'tree',
-    label: 'Пошкоджені',
-    color: COLOR.yellow600,
-  },
-  {
-    key: 'dying',
-    icon: 'tree',
-    label: 'Помирають',
-    color: COLOR.red600,
-  },
-  {
-    key: 'dry',
-    icon: 'tree',
-    label: 'Напівсухі та сухі',
-    color: COLOR.black,
-  },
-  {
-    key: 'toping',
-    icon: 'tree',
-    label: 'Топінг',
-    color: COLOR.purple600,
-  },
-  {
-    key: 'mistletoe',
-    icon: 'tree',
-    label: 'Вражені омелою',
-    color: COLOR.blue600,
-  },
-];
+import { TREES_FILTERS } from '../consts/appConsts';
 
 class MapFilters extends Component {
   constructor(props) {
@@ -149,7 +111,7 @@ class MapFilters extends Component {
                 alignItems: 'flex-start',
               }}
             >
-              {tabs.slice(0, 3).map(tab => (
+              {TREES_FILTERS.slice(0, 3).map(tab => (
                 <Button
                   upperCase={false}
                   key={tab.key}
@@ -181,7 +143,7 @@ class MapFilters extends Component {
                 alignItems: 'flex-start',
               }}
             >
-              {tabs.slice(3).map(tab => (
+              {TREES_FILTERS.slice(3).map(tab => (
                 <Button
                   upperCase={false}
                   key={tab.key}

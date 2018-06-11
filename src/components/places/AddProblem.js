@@ -1,9 +1,9 @@
 import React, { Fragment, Component } from 'react';
 import PropTypes from 'prop-types';
-import { AsyncStorage, ScrollView, View } from 'react-native';
+import { AsyncStorage, ScrollView, StatusBar, View } from 'react-native';
 import { Dropdown } from 'react-native-material-dropdown';
 import { TextField } from 'react-native-material-textfield';
-import { ThemeProvider, Toolbar } from 'react-native-material-ui';
+import { COLOR, ThemeProvider, Toolbar } from 'react-native-material-ui';
 import { NavigationActions } from 'react-navigation';
 import { formContainer, uiTheme } from '../../consts/styles';
 import { LOCATION } from '../../consts/appConsts';
@@ -77,6 +77,11 @@ class AddProblem extends Component {
     return (
       <ThemeProvider uiTheme={uiTheme}>
         <Fragment>
+          <StatusBar
+            backgroundColor={COLOR.green900}
+            barStyle="light-content"
+          />
+
           <Toolbar
             leftElement="close"
             centerElement="Описати проблему"

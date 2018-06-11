@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import { View } from 'react-native';
+import { StatusBar, View } from 'react-native';
 import MapView from 'react-native-maps';
-import { Subheader, Toolbar } from 'react-native-material-ui';
+import { COLOR, Subheader, Toolbar } from 'react-native-material-ui';
 import update from 'immutability-helper';
 import { containerStyles, mapStyles } from '../../consts/styles';
 import LocationService from '../../services/LocationService';
@@ -31,6 +31,11 @@ class MapModal extends PureComponent {
   render() {
     return (
       <View style={containerStyles}>
+        <StatusBar
+          backgroundColor={COLOR.green900}
+          barStyle="light-content"
+        />
+
         <Toolbar
           leftElement="arrow-back"
           centerElement="Торкніться місця на карті"

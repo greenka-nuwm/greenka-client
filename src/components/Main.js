@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
-import { AsyncStorage, View, StyleSheet } from 'react-native';
+import { AsyncStorage, View, StyleSheet, StatusBar } from 'react-native';
 import ActionButton from 'react-native-action-button';
 import MapView from 'react-native-maps';
 import { COLOR, ThemeProvider, Toolbar } from 'react-native-material-ui';
@@ -106,6 +106,11 @@ class Main extends Component {
     return (
       <ThemeProvider uiTheme={uiTheme}>
         <Fragment>
+          <StatusBar
+            backgroundColor={COLOR.green900}
+            barStyle="light-content"
+          />
+
           <Toolbar
             leftElement="menu"
             centerElement="Greenka"
@@ -125,6 +130,11 @@ class Main extends Component {
                     latitude: tree.latitude,
                   }}
                   image={this.state.icons[tree.tree_state]}
+                  onPress={() => {
+                    this.props.navigation.dispatch(
+                      NavigationActions.navigate({ routeName: 'TreeView', params: { tree } }),
+                    );
+                  }}
                 />
               ))}
             </MapView>

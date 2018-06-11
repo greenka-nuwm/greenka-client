@@ -1,9 +1,10 @@
 import { AsyncStorage } from 'react-native';
 import { createDrawerNavigator } from 'react-navigation';
 import Main from './components/Main';
+import TreeView from './components/places/trees/TreeView';
 import Sidenav from './components/Sidenav';
 import AddProblem from './components/places/AddProblem';
-import AddTree from './components/places/AddTree';
+import AddTree from './components/places/trees/AddTree';
 import Places from './components/places/Places';
 import Info from './components/Info';
 import AddResponse from './components/AddResponse';
@@ -23,6 +24,9 @@ const App = createDrawerNavigator({
   },
   AddTree: {
     screen: AddTree,
+  },
+  TreeView: {
+    screen: TreeView,
   },
   AddProblem: {
     screen: AddProblem,

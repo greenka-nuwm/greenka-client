@@ -1,12 +1,18 @@
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
-import { ThemeProvider, Toolbar } from 'react-native-material-ui';
+import { StatusBar } from 'react-native';
+import { COLOR, ThemeProvider, Toolbar } from 'react-native-material-ui';
 import { NavigationActions } from 'react-navigation';
 import { uiTheme } from '../consts/styles';
 
 const Info = props => (
   <ThemeProvider uiTheme={uiTheme}>
     <Fragment>
+      <StatusBar
+        backgroundColor={COLOR.green900}
+        barStyle="light-content"
+      />
+
       <Toolbar
         leftElement="arrow-back"
         centerElement="Довідка"

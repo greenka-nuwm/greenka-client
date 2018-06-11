@@ -1,9 +1,9 @@
 import axios from 'axios';
 import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
-import { ScrollView, Keyboard, Alert } from 'react-native';
+import { ScrollView, Keyboard, Alert, StatusBar } from 'react-native';
 import { TextField } from 'react-native-material-textfield';
-import { ThemeProvider, Toolbar } from 'react-native-material-ui';
+import { COLOR, ThemeProvider, Toolbar } from 'react-native-material-ui';
 import Snackbar from 'react-native-snackbar';
 import { NavigationActions } from 'react-navigation';
 import { formContainer, uiTheme } from '../consts/styles';
@@ -48,6 +48,11 @@ class AddResponse extends Component {
     return (
       <ThemeProvider uiTheme={uiTheme}>
         <Fragment>
+          <StatusBar
+            backgroundColor={COLOR.green900}
+            barStyle="light-content"
+          />
+
           <Toolbar
             leftElement="close"
             centerElement="Надіслати відгук"

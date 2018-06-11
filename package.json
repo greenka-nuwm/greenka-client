@@ -7,14 +7,14 @@
     "babel-preset-react-native-stage-0": "^1.0.1",
     "eslint": "^4.19.1",
     "eslint-config-airbnb": "^16.1.0",
-    "eslint-plugin-import": "^2.11.0",
+    "eslint-plugin-import": "^2.12.0",
     "eslint-plugin-jsx-a11y": "^6.0.3",
-    "eslint-plugin-react": "^7.8.1",
+    "eslint-plugin-react": "^7.9.1",
     "husky": "^0.14.3",
-    "jest": "^22.4.3",
+    "jest": "^23.1.0",
     "jest-react-native": "^18.0.0",
-    "lint-staged": "^7.1.0",
-    "react-test-renderer": "16.3.1"
+    "lint-staged": "^7.2.0",
+    "react-test-renderer": "^16.4.0"
   },
   "scripts": {
     "precommit": "lint-staged",
@@ -37,18 +37,20 @@
     "immutability-helper": "^2.7.0",
     "lodash.merge": "^4.6.1",
     "prop-types": "^15.6.1",
-    "react": "16.3.1",
+    "react": "^16.4.0",
     "react-native": "^0.55.4",
     "react-native-action-button": "^2.8.4",
     "react-native-geocoder": "^0.5.0",
     "react-native-google-places": "^2.5.0",
+    "react-native-linear-gradient": "^2.4.0",
     "react-native-maps": "^0.21.0",
     "react-native-material-dropdown": "^0.11.1",
     "react-native-material-textfield": "^0.12.0",
     "react-native-material-ui": "^1.22.3",
     "react-native-snackbar": "^0.4.7",
-    "react-native-tab-view": "^1.0.0",
+    "react-native-swiper": "^1.5.13",
+    "react-native-tab-view": "^1.0.2",
     "react-native-vector-icons": "^4.6.0",
-    "react-navigation": "^2.0.1"
+    "react-navigation": "^2.2.5"
   }
 }

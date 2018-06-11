@@ -12,6 +12,7 @@ import com.airbnb.android.react.maps.MapsPackage;
 import com.devfd.RNGeocoder.RNGeocoderPackage;
 import com.arttitude360.reactnative.rngoogleplaces.RNGooglePlacesPackage;
 import com.azendoo.reactnativesnackbar.SnackbarPackage;
+import com.BV.LinearGradient.LinearGradientPackage;
 
 import java.util.Arrays;
 import java.util.List;
@@ -32,7 +33,8 @@ public class MainApplication extends Application implements ReactApplication {
           new MapsPackage(),
           new RNGeocoderPackage(),
           new RNGooglePlacesPackage(),
-          new SnackbarPackage()
+          new SnackbarPackage(),
+          new LinearGradientPackage()
       );
     }
 
