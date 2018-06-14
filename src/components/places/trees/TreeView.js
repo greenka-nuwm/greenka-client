@@ -1,6 +1,7 @@
 import React, { Fragment, Component } from 'react';
 import PropTypes from 'prop-types';
 import {
+  ActivityIndicator,
   Dimensions,
   Image,
   ScrollView,
@@ -66,6 +67,7 @@ class TreeView extends Component {
     super(props);
 
     this.state = {
+      isDataFetched: false,
       tree: this.props.navigation.getParam('tree', {}),
       address: '',
       states: [],
@@ -83,6 +85,7 @@ class TreeView extends Component {
       states,
       types,
       sorts,
+      isDataFetched: true,
     });
 
     if (this.state.tree.latitude && this.state.tree.longitude) {
@@ -128,7 +131,7 @@ class TreeView extends Component {
     );
   }
 
-  render() {
+  getPage() {
     return (
       <ThemeProvider uiTheme={uiTheme}>
         <Fragment>
@@ -153,61 +156,46 @@ class TreeView extends Component {
             style={{ container: styles.toolbarContainer }}
           />
 
-          {this.state.tree.images.length === 0 &&
-          <Image
-            style={styles.image}
-            source={PlaceholderImage}
-          />
-          }
-
-          {this.state.tree.images.length > 0 &&
-          <View style={styles.imageDimensions}>
-            <Swiper
-              dotColor={COLOR.white}
-              activeDotColor={COLOR.white}
-              activeDotStyle={{ width: 10, height: 10 }}
-              dotStyle={{ width: 6, height: 6 }}
-            >
-              {this.state.tree.images.map(image => (
-                <Image
-                  style={styles.image}
-                  source={{ uri: image }}
-                />
-              ))}
-            </Swiper>
-          </View>
+          {
+            this.state.tree.images.length === 0
+              ? <Image style={styles.image} source={PlaceholderImage} />
+              : (
+                <View style={styles.imageDimensions}>
+                  <Swiper
+                    dotColor={COLOR.white}
+                    activeDotColor={COLOR.white}
+                    activeDotStyle={{ width: 10, height: 10 }}
+                    dotStyle={{ width: 6, height: 6 }}
+                  >
+                    {this.state.tree.images.map(image => (
+                      <Image
+                        style={styles.image}
+                        source={{ uri: image }}
+                      />
+                    ))}
+                  </Swiper>
+                </View>
+              )
           }
 
           <ScrollView style={{ marginTop: 10 }}>
             {TreeView.getMultilineListItem('place', this.state.address)}
 
-            {
-              this.state.states.length > 0
-              && this.state.tree.tree_state
-              && TreeView.getListItem(
-                'heart-pulse',
-                this.state.states[ACTIVE_FILTERS.indexOf(this.state.tree.tree_state)].value,
-                TREES_FILTERS[ACTIVE_FILTERS.indexOf(this.state.tree.tree_state)].color,
-              )
-            }
+            {TreeView.getListItem(
+              'heart-pulse',
+              this.state.states[ACTIVE_FILTERS.indexOf(this.state.tree.tree_state)].value,
+              TREES_FILTERS[ACTIVE_FILTERS.indexOf(this.state.tree.tree_state)].color,
+            )}
 
-            {
-              this.state.types.length > 0
-              && this.state.tree.tree_type
-              && TreeView.getListItem(
-                'pine-tree',
-                this.state.types[this.state.tree.tree_type - 1].value,
-              )
-            }
+            {TreeView.getListItem(
+              'pine-tree',
+              this.state.types[this.state.tree.tree_type - 1].value,
+            )}
 
-            {
-              this.state.sorts.length > 0
-              && this.state.tree.tree_sort
-              && TreeView.getListItem(
-                'tree',
-                this.state.sorts[this.state.tree.tree_sort - 1].value,
-              )
-            }
+            {TreeView.getListItem(
+              'tree',
+              this.state.sorts[this.state.tree.tree_sort - 1].value,
+            )}
 
             {
               this.state.tree.description !== ''
@@ -216,6 +204,18 @@ class TreeView extends Component {
           </ScrollView>
         </Fragment>
       </ThemeProvider>
+    );
+  }
+
+  render() {
+    return (
+      this.state.isDataFetched
+        ? this.getPage()
+        : (
+          <View style={{ flex: 1, justifyContent: 'center' }}>
+            <ActivityIndicator size="large" color={uiTheme.palette.primaryColor} />
+          </View>
+        )
     );
   }
 }
