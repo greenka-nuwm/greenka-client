@@ -8,6 +8,7 @@ import { ACTIVE_FILTERS, LOCATION } from '../consts/appConsts';
 import { drawerOverlayStyles, uiTheme } from '../consts/styles';
 import LocationService from '../services/LocationService';
 import NavigationService from '../services/NavigationService';
+import ProblemsService from '../services/ProblemsService';
 import TreesService from '../services/TreesService';
 import GreenkaActionButton from './GreenkaActionButton';
 import MapFilters from './MapFilters';
@@ -22,6 +23,7 @@ class Main extends Component {
       icons: [],
       trees: [],
       allTrees: [],
+      problems: [],
     };
   }
 
@@ -46,6 +48,8 @@ class Main extends Component {
     const trees = await TreesService.getTreesInRadius(this.state.location);
     const filteredTrees = trees.filter(tree => activeFilters.includes(tree.tree_state));
 
+    const problems = await ProblemsService.getProblemsInRadius(this.state.location);
+
     this.setState({
       icons: {
         healthy,
@@ -58,6 +62,7 @@ class Main extends Component {
       activeFilters,
       trees: filteredTrees,
       allTrees: trees,
+      problems,
     });
   }
 
@@ -132,6 +137,12 @@ class Main extends Component {
                   coordinate={{ longitude: tree.longitude, latitude: tree.latitude }}
                   image={this.state.icons[tree.tree_state]}
                   onPress={() => NavigationService.goToTreeView(tree.id)}
+                />
+              ))}
+              {this.state.problems.map(problem => (
+                <MapView.Marker
+                  key={`marker-${problem.id}`}
+                  coordinate={{ longitude: problem.longitude, latitude: problem.latitude }}
                 />
               ))}
             </MapView>
