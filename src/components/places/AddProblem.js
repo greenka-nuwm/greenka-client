@@ -16,13 +16,11 @@ class AddProblem extends Component {
     super(props);
 
     this.state = {
-      name: this.props.name,
       addressString: this.props.addressString,
       location: this.props.location,
       type: this.props.type,
       description: this.props.description,
       isDataFetched: false,
-      showNameError: false,
       showAddressError: false,
       showTypeError: false,
     };
@@ -62,16 +60,6 @@ class AddProblem extends Component {
           />
 
           <ScrollView style={formContainer}>
-            <View>
-              <TextField
-                multiline
-                label="Назва*"
-                value={this.state.name}
-                error={this.state.showNameError ? 'Вкажіть ім\'я' : ''}
-                onChangeText={this.handleNameChange}
-              />
-            </View>
-
             <AddressField
               addressString={this.state.addressString}
               location={this.state.location}
@@ -104,16 +92,13 @@ class AddProblem extends Component {
   }
 
   handleSubmit = async () => {
-    const showNameError = this.state.name === '';
     const showAddressError = this.state.addressString === '';
     const showTypeError = this.state.type.value === '';
 
-    this.setState({ showNameError, showAddressError, showTypeError });
+    this.setState({ showAddressError, showTypeError });
 
-    if (!(showNameError || showAddressError || showTypeError)) {
+    if (!(showAddressError || showTypeError)) {
       const problem = {
-        verbose_name: this.state.name,
-        name: this.state.name,
         latitude: this.state.location.latitude,
         longitude: this.state.location.longitude,
         problem_type: this.state.type.id,
@@ -127,12 +112,10 @@ class AddProblem extends Component {
         await ProblemsService.create(problem);
 
         this.setState({
-          name: this.props.name,
           addressString: this.props.addressString,
           location: this.state.userLocation,
           type: this.props.type,
           description: this.props.description,
-          showNameError: false,
           showAddressError: false,
           showTypeError: false,
         });
@@ -154,10 +137,6 @@ class AddProblem extends Component {
         );
       }
     }
-  };
-
-  handleNameChange = name => {
-    this.setState({ name, showNameError: false });
   };
 
   handleAddressChange = address => {
@@ -193,7 +172,6 @@ class AddProblem extends Component {
 }
 
 AddProblem.propTypes = {
-  name: PropTypes.string,
   addressString: PropTypes.string,
   location: PropTypes.shape({
     latitude: PropTypes.number,
@@ -209,7 +187,6 @@ AddProblem.propTypes = {
 };
 
 AddProblem.defaultProps = {
-  name: '',
   addressString: '',
   location: LOCATION,
   type: { id: 0, value: '' },
