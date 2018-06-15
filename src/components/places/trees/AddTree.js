@@ -1,6 +1,6 @@
 import React, { Fragment, Component } from 'react';
 import PropTypes from 'prop-types';
-import { Alert, AsyncStorage, ScrollView, View } from 'react-native';
+import { ActivityIndicator, Alert, AsyncStorage, ScrollView, View } from 'react-native';
 import { Dropdown } from 'react-native-material-dropdown';
 import { TextField } from 'react-native-material-textfield';
 import { ThemeProvider, Toolbar } from 'react-native-material-ui';
@@ -23,9 +23,7 @@ class AddTree extends Component {
       sort: this.props.sort,
       description: this.props.description,
       states: TREES_STATES,
-      types: [],
-      sorts: [],
-      allSorts: [],
+      isDataFetched: false,
       showAddressError: false,
       showStateError: false,
     };
@@ -42,7 +40,71 @@ class AddTree extends Component {
       types,
       sorts,
       allSorts: sorts,
+      isDataFetched: true,
     });
+  }
+
+  getPage() {
+    return (
+      <ThemeProvider uiTheme={uiTheme}>
+        <Fragment>
+          <Toolbar
+            leftElement="close"
+            centerElement="Внести дерево"
+            rightElement="send"
+            onLeftElementPress={NavigationService.goToHome}
+            onRightElementPress={this.handleSubmit}
+            style={{ container: { elevation: 0 } }}
+          />
+
+          <ScrollView style={formContainer}>
+            <AddressField
+              addressString={this.state.addressString}
+              location={this.state.location}
+              showAddressError={this.state.showAddressError}
+              onAddressChange={this.handleAddressChange}
+            />
+
+            <View>
+              <Dropdown
+                label="Стан*"
+                value={this.state.state.value}
+                error={this.state.showStateError ? 'Вкажіть стан дерева' : ''}
+                data={this.state.states}
+                onChangeText={this.handleStateChange}
+              />
+            </View>
+
+            <View>
+              <Dropdown
+                label="Вид дерева"
+                value={this.state.type.value}
+                data={this.state.types}
+                onChangeText={this.handleTypeChange}
+              />
+            </View>
+
+            <View>
+              <Dropdown
+                label="Порода дерева"
+                value={this.state.sort.value}
+                data={this.state.sorts}
+                onChangeText={this.handleSortChange}
+              />
+            </View>
+
+            <View>
+              <TextField
+                multiline
+                label="Додатковий опис"
+                value={this.state.description}
+                onChangeText={this.handleDescriptionChange}
+              />
+            </View>
+          </ScrollView>
+        </Fragment>
+      </ThemeProvider>
+    );
   }
 
   handleSubmit = async () => {
@@ -136,64 +198,13 @@ class AddTree extends Component {
 
   render() {
     return (
-      <ThemeProvider uiTheme={uiTheme}>
-        <Fragment>
-          <Toolbar
-            leftElement="close"
-            centerElement="Внести дерево"
-            rightElement="send"
-            onLeftElementPress={NavigationService.goToHome}
-            onRightElementPress={this.handleSubmit}
-            style={{ container: { elevation: 0 } }}
-          />
-
-          <ScrollView style={formContainer}>
-            <AddressField
-              addressString={this.state.addressString}
-              location={this.state.location}
-              showAddressError={this.state.showAddressError}
-              onAddressChange={this.handleAddressChange}
-            />
-
-            <View>
-              <Dropdown
-                label="Стан*"
-                value={this.state.state.value}
-                error={this.state.showStateError ? 'Вкажіть стан дерева' : ''}
-                data={this.state.states}
-                onChangeText={this.handleStateChange}
-              />
-            </View>
-
-            <View>
-              <Dropdown
-                label="Вид дерева"
-                value={this.state.type.value}
-                data={this.state.types}
-                onChangeText={this.handleTypeChange}
-              />
-            </View>
-
-            <View>
-              <Dropdown
-                label="Порода дерева"
-                value={this.state.sort.value}
-                data={this.state.sorts}
-                onChangeText={this.handleSortChange}
-              />
-            </View>
-
-            <View>
-              <TextField
-                multiline
-                label="Додатковий опис"
-                value={this.state.description}
-                onChangeText={this.handleDescriptionChange}
-              />
-            </View>
-          </ScrollView>
-        </Fragment>
-      </ThemeProvider>
+      this.state.isDataFetched
+        ? this.getPage()
+        : (
+          <View style={{ flex: 1, justifyContent: 'center' }}>
+            <ActivityIndicator size="large" color={uiTheme.palette.primaryColor} />
+          </View>
+        )
     );
   }
 }
