@@ -1,16 +1,14 @@
 import PropTypes from 'prop-types';
 import React, { Component, Fragment } from 'react';
-import { AsyncStorage, StatusBar, View } from 'react-native';
-import MapView from 'react-native-maps';
+import { AsyncStorage, StatusBar } from 'react-native';
 import { COLOR, ThemeProvider, Toolbar } from 'react-native-material-ui';
-import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { ACTIVE_FILTERS, LOCATION } from '../consts/appConsts';
-import { drawerOverlayStyles, uiTheme } from '../consts/styles';
+import { uiTheme } from '../consts/styles';
 import LocationService from '../services/LocationService';
-import NavigationService from '../services/NavigationService';
 import ProblemsService from '../services/ProblemsService';
 import TreesService from '../services/TreesService';
 import GreenkaActionButton from './GreenkaActionButton';
+import Map from './Map';
 import MapFilters from './MapFilters';
 
 class Main extends Component {
@@ -20,7 +18,6 @@ class Main extends Component {
     this.state = {
       location: LOCATION,
       activeFilters: ACTIVE_FILTERS,
-      icons: [],
       trees: [],
       allTrees: [],
       problems: [],
@@ -38,27 +35,12 @@ class Main extends Component {
 
     const activeFilters = JSON.parse(await AsyncStorage.getItem('activeFilters'));
 
-    const healthy = await MaterialCommunityIcon.getImageSource('tree', 26, COLOR.green600);
-    const broken = await MaterialCommunityIcon.getImageSource('tree', 26, COLOR.yellow600);
-    const dying = await MaterialCommunityIcon.getImageSource('tree', 26, COLOR.red600);
-    const dry = await MaterialCommunityIcon.getImageSource('tree', 26, COLOR.orange600);
-    const toping = await MaterialCommunityIcon.getImageSource('tree', 26, COLOR.purple600);
-    const mistletoe = await MaterialCommunityIcon.getImageSource('tree', 26, COLOR.blue600);
-
     const trees = await TreesService.getTreesInRadius(this.state.location);
     const filteredTrees = trees.filter(tree => activeFilters.includes(tree.tree_state));
 
     const problems = await ProblemsService.getProblemsInRadius(this.state.location);
 
     this.setState({
-      icons: {
-        healthy,
-        broken,
-        dying,
-        dry,
-        toping,
-        mistletoe,
-      },
       activeFilters,
       trees: filteredTrees,
       allTrees: trees,
@@ -125,31 +107,12 @@ class Main extends Component {
             onLeftElementPress={this.props.navigation.openDrawer}
           />
 
-          <View style={drawerOverlayStyles.container}>
-            <MapView
-              style={drawerOverlayStyles.mapContainer}
-              region={this.state.location}
-              // onRegionChangeComplete={this.handleRegionChange}
-            >
-              {this.state.trees.map(tree => (
-                <MapView.Marker
-                  key={`marker-${tree.id}`}
-                  coordinate={{ longitude: tree.longitude, latitude: tree.latitude }}
-                  image={this.state.icons[tree.tree_state]}
-                  onPress={() => NavigationService.goToTreeView(tree.id)}
-                />
-              ))}
-              {this.state.problems.map(problem => (
-                <MapView.Marker
-                  key={`marker-${problem.id}`}
-                  coordinate={{ longitude: problem.longitude, latitude: problem.latitude }}
-                  onPress={() => NavigationService.goToProblemView(problem.id)}
-                />
-              ))}
-            </MapView>
-
-            <View style={drawerOverlayStyles.mapDrawerOverlay} />
-          </View>
+          <Map
+            location={this.state.location}
+            trees={this.state.trees}
+            problems={this.state.problems}
+            // onRegionChange={this.handleRegionChange}
+          />
 
           <GreenkaActionButton />
 
