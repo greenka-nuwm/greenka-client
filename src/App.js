@@ -4,8 +4,9 @@ import { createDrawerNavigator } from 'react-navigation';
 import AddResponse from './components/AddResponse';
 import Info from './components/Info';
 import Main from './components/Main';
-import AddProblem from './components/places/AddProblem';
 import Places from './components/places/Places';
+import AddProblem from './components/places/problems/AddProblem';
+import ProblemView from './components/places/problems/ProblemView';
 import AddTree from './components/places/trees/AddTree';
 import TreeView from './components/places/trees/TreeView';
 import Sidenav from './components/Sidenav';
@@ -32,6 +33,9 @@ const TopLevelNavigator = createDrawerNavigator({
   },
   AddProblem: {
     screen: AddProblem,
+  },
+  ProblemView: {
+    screen: ProblemView,
   },
   Places: {
     screen: Places,

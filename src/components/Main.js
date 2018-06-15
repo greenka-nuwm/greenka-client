@@ -143,6 +143,7 @@ class Main extends Component {
                 <MapView.Marker
                   key={`marker-${problem.id}`}
                   coordinate={{ longitude: problem.longitude, latitude: problem.latitude }}
+                  onPress={() => NavigationService.goToProblemView(problem.id)}
                 />
               ))}
             </MapView>

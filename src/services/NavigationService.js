@@ -41,6 +41,13 @@ class NavigationService {
       params: { id },
     }));
   }
+
+  static goToProblemView(id) {
+    NavigationService.navigator.dispatch(NavigationActions.navigate({
+      routeName: 'ProblemView',
+      params: { id },
+    }));
+  }
 }
 
 export default NavigationService;

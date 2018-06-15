@@ -15,11 +15,10 @@ import { COLOR, ListItem, ThemeProvider, Toolbar } from 'react-native-material-u
 import Swiper from 'react-native-swiper';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import PlaceholderImage from '../../../assets/images/placeholder.png';
-import { TREES_STATES } from '../../../consts/appConsts';
 import { uiTheme } from '../../../consts/styles';
 import LocationService from '../../../services/LocationService';
 import NavigationService from '../../../services/NavigationService';
-import TreesService from '../../../services/TreesService';
+import ProblemsService from '../../../services/ProblemsService';
 
 const styles = StyleSheet.create({
   linearGradient: {
@@ -55,7 +54,7 @@ const styles = StyleSheet.create({
   },
 });
 
-class TreeView extends Component {
+class ProblemView extends Component {
   constructor(props) {
     super(props);
 
@@ -65,18 +64,18 @@ class TreeView extends Component {
   }
 
   async componentDidMount() {
-    const tree = await TreesService
-      .getTreeById(this.props.navigation.getParam('id', null));
+    const problem = await ProblemsService
+      .getProblemById(this.props.navigation.getParam('id', null));
 
     this.setState({
-      tree,
+      problem,
       isDataFetched: true,
     });
 
-    if (this.state.tree.latitude && this.state.tree.longitude) {
+    if (this.state.problem.latitude && this.state.problem.longitude) {
       const address = (await LocationService.geocodePosition({
-        longitude: this.state.tree.longitude,
-        latitude: this.state.tree.latitude,
+        longitude: this.state.problem.longitude,
+        latitude: this.state.problem.latitude,
       })).formattedAddress;
 
       this.setState({ address });
@@ -135,7 +134,8 @@ class TreeView extends Component {
           />
 
           {
-            this.state.tree.images.length === 0
+            // this.state.problem.images.length === 0
+            !this.state.problem.images
               ? <Image style={styles.image} source={PlaceholderImage} />
               : (
                 <View style={styles.imageDimensions}>
@@ -145,7 +145,7 @@ class TreeView extends Component {
                     activeDotStyle={{ width: 10, height: 10 }}
                     dotStyle={{ width: 6, height: 6 }}
                   >
-                    {this.state.tree.images.map(image => (
+                    {this.state.problem.images.map(image => (
                       <Image
                         style={styles.image}
                         source={{ uri: image }}
@@ -159,25 +159,14 @@ class TreeView extends Component {
           <ScrollView style={{ marginTop: 10 }}>
             {this.getMultilineListItem('place', this.state.address)}
 
-            {this.getListItem(
-              'heart-pulse',
-              TREES_STATES[this.state.tree.tree_state].value,
-              TREES_STATES[this.state.tree.tree_state].color,
-            )}
-
             {
-              this.state.tree.tree_type
-              && this.getListItem('pine-tree', this.state.tree.tree_type.name)
+              this.state.problem.problem_type
+              && this.getListItem('alert', this.state.problem.problem_type.verbose_name)
             }
 
             {
-              this.state.tree.tree_sort
-              && this.getListItem('tree', this.state.tree.tree_sort.name)
-            }
-
-            {
-              this.state.tree.description !== ''
-              && this.getMultilineListItem('note', this.state.tree.description)
+              this.state.problem.description != null
+              && this.getMultilineListItem('note', this.state.problem.description)
             }
           </ScrollView>
         </Fragment>
@@ -198,10 +187,10 @@ class TreeView extends Component {
   }
 }
 
-TreeView.propTypes = {
+ProblemView.propTypes = {
   navigation: PropTypes.shape({
     getParam: PropTypes.func.isRequired,
   }).isRequired,
 };
 
-export default TreeView;
+export default ProblemView;

@@ -5,11 +5,11 @@ import { Dropdown } from 'react-native-material-dropdown';
 import { TextField } from 'react-native-material-textfield';
 import { COLOR, ThemeProvider, Toolbar } from 'react-native-material-ui';
 import Snackbar from 'react-native-snackbar';
-import { LOCATION } from '../../consts/appConsts';
-import { formContainer, uiTheme } from '../../consts/styles';
-import NavigationService from '../../services/NavigationService';
-import ProblemsService from '../../services/ProblemsService';
-import AddressField from './AddressField';
+import { LOCATION } from '../../../consts/appConsts';
+import { formContainer, uiTheme } from '../../../consts/styles';
+import NavigationService from '../../../services/NavigationService';
+import ProblemsService from '../../../services/ProblemsService';
+import AddressField from '../AddressField';
 
 class AddProblem extends Component {
   constructor(props) {

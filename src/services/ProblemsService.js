@@ -16,6 +16,10 @@ class ProblemsService {
     })).data;
   }
 
+  static async getProblemById(id) {
+    return (await axios.get(`/problems/${id}/`)).data;
+  }
+
   static async getProblemsTypes() {
     return (await axios.get('/problems/types/')).data
       .map(type => ({ id: type.id, value: type.verbose_name }));
