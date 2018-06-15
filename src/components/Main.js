@@ -102,6 +102,7 @@ class Main extends Component {
           />
 
           <Toolbar
+            style={{ container: { zIndex: 10 } }}
             leftElement="menu"
             centerElement="Greenka"
             onLeftElementPress={this.props.navigation.openDrawer}

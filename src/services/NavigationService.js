@@ -1,8 +1,12 @@
-import { NavigationActions } from 'react-navigation';
+import { DrawerActions, NavigationActions } from 'react-navigation';
 
 class NavigationService {
   static setTopLevelNavigator(navigator) {
     NavigationService.navigator = navigator;
+  }
+
+  static closeDrawer() {
+    NavigationService.navigator.dispatch(DrawerActions.closeDrawer());
   }
 
   static goToHome() {

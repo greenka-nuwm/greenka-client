@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { Alert, Image } from 'react-native';
+import { Alert, BackHandler, Image } from 'react-native';
 import { Avatar, Drawer, ThemeProvider } from 'react-native-material-ui';
 import { MOCKED_USER } from '../consts/mockedData';
 import { uiTheme } from '../consts/styles';
@@ -9,7 +9,19 @@ import NavigationService from '../services/NavigationService';
 const merge = require('lodash.merge');
 
 class Sidenav extends Component {
-// TODO: style sidenav header font color and make darkened background
+  componentDidMount() {
+    BackHandler.addEventListener('hardwareBackPress', () => {
+      if (this.props.navigation.state.isDrawerOpen) {
+        NavigationService.closeDrawer();
+
+        return true;
+      }
+
+      return false;
+    });
+  }
+
+  // TODO: style sidenav header font color and make darkened background
   getHeaderStyles = () => {};
 
   getHeaderOptions = () => (
@@ -121,6 +133,11 @@ Sidenav.propTypes = {
     avatar: PropTypes.string,
     profileImage: PropTypes.string,
   }),
+  navigation: PropTypes.shape({
+    state: PropTypes.shape({
+      isDrawerOpen: PropTypes.bool.isRequired,
+    }).isRequired,
+  }).isRequired,
 };
 
 Sidenav.defaultProps = {
