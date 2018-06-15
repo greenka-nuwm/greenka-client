@@ -1,3 +1,3 @@
 import './apiUrlInterceptor';
-import './tokenInterceptor';
 import './debugInterceptors';
+import './tokenInterceptor';

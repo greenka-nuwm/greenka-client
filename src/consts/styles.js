@@ -1,4 +1,4 @@
-import { StyleSheet, Dimensions } from 'react-native';
+import { Dimensions, StyleSheet } from 'react-native';
 import { COLOR } from 'react-native-material-ui';
 
 export const uiTheme = {

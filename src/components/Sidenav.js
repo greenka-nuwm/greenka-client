@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 import { Alert, Image } from 'react-native';
 import { Avatar, Drawer, ThemeProvider } from 'react-native-material-ui';
 import { MOCKED_USER } from '../consts/mockedData';

@@ -1,5 +1,5 @@
-import { Dimensions } from 'react-native';
 import axios from 'axios';
+import { Dimensions } from 'react-native';
 import { ACTIVE_FILTERS } from '../consts/appConsts';
 
 // TODO: error handling

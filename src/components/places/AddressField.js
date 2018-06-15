@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
-import { View, StyleSheet, Modal, TouchableOpacity } from 'react-native';
-import PropTypes from 'prop-types';
 import update from 'immutability-helper';
-import MapView from 'react-native-maps';
-import { Button } from 'react-native-material-ui';
-import { TextField } from 'react-native-material-textfield';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import { Modal, StyleSheet, TouchableOpacity, View } from 'react-native';
 import RNGooglePlaces from 'react-native-google-places';
+import MapView from 'react-native-maps';
+import { TextField } from 'react-native-material-textfield';
+import { Button } from 'react-native-material-ui';
 import MapModal from './MapModal';
 
 const styles = StyleSheet.create({

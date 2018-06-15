@@ -1,5 +1,5 @@
-import React, { Fragment, Component } from 'react';
 import PropTypes from 'prop-types';
+import React, { Component, Fragment } from 'react';
 import {
   ActivityIndicator,
   Dimensions,
@@ -14,9 +14,9 @@ import LinearGradient from 'react-native-linear-gradient';
 import { COLOR, ListItem, ThemeProvider, Toolbar } from 'react-native-material-ui';
 import Swiper from 'react-native-swiper';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
+import PlaceholderImage from '../../../assets/images/placeholder.png';
 import { TREES_STATES } from '../../../consts/appConsts';
 import { uiTheme } from '../../../consts/styles';
-import PlaceholderImage from '../../../assets/images/placeholder.png';
 import LocationService from '../../../services/LocationService';
 import NavigationService from '../../../services/NavigationService';
 import TreesService from '../../../services/TreesService';

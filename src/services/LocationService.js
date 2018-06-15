@@ -13,7 +13,9 @@ class LocationService {
   }
 
   static getLocationPermission() {
-    return Boolean(PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION));
+    return Boolean(PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+    ));
   }
 
   static geocodePosition(position) {

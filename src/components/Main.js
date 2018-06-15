@@ -1,6 +1,6 @@
-import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
-import { AsyncStorage, View, StatusBar } from 'react-native';
+import React, { Component, Fragment } from 'react';
+import { AsyncStorage, StatusBar, View } from 'react-native';
 import MapView from 'react-native-maps';
 import { COLOR, ThemeProvider, Toolbar } from 'react-native-material-ui';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';

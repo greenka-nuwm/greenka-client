@@ -1,15 +1,10 @@
-import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
+import React, { Component, Fragment } from 'react';
 import { View } from 'react-native';
-import {
-  BottomNavigation,
-  Button,
-  COLOR,
-  ThemeProvider,
-} from 'react-native-material-ui';
+import { BottomNavigation, Button, COLOR, ThemeProvider } from 'react-native-material-ui';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { uiTheme } from '../consts/styles';
 import { TREES_STATES } from '../consts/appConsts';
+import { uiTheme } from '../consts/styles';
 
 class MapFilters extends Component {
   constructor(props) {

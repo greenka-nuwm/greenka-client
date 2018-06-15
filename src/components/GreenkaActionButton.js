@@ -1,8 +1,8 @@
 import React, { Fragment } from 'react';
 import { StyleSheet, View } from 'react-native';
+import ActionButton from 'react-native-action-button';
 import { COLOR } from 'react-native-material-ui';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
-import ActionButton from 'react-native-action-button';
 import { uiTheme } from '../consts/styles';
 import NavigationService from '../services/NavigationService';
 

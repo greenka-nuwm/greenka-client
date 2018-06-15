@@ -1,14 +1,14 @@
 import React from 'react';
 import { AsyncStorage } from 'react-native';
 import { createDrawerNavigator } from 'react-navigation';
+import AddResponse from './components/AddResponse';
+import Info from './components/Info';
 import Main from './components/Main';
+import AddProblem from './components/places/AddProblem';
+import Places from './components/places/Places';
+import AddTree from './components/places/trees/AddTree';
 import TreeView from './components/places/trees/TreeView';
 import Sidenav from './components/Sidenav';
-import AddProblem from './components/places/AddProblem';
-import AddTree from './components/places/trees/AddTree';
-import Places from './components/places/Places';
-import Info from './components/Info';
-import AddResponse from './components/AddResponse';
 import { ACTIVE_FILTERS, LOCATION } from './consts/appConsts';
 import NavigationService from './services/NavigationService';
 

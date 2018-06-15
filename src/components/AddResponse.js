@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React, { Component, Fragment } from 'react';
-import { ScrollView, Keyboard, Alert, StatusBar } from 'react-native';
+import { Alert, Keyboard, ScrollView, StatusBar } from 'react-native';
 import { TextField } from 'react-native-material-textfield';
 import { COLOR, ThemeProvider, Toolbar } from 'react-native-material-ui';
 import Snackbar from 'react-native-snackbar';

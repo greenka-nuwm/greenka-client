@@ -1,12 +1,12 @@
-import React, { Fragment, Component } from 'react';
 import PropTypes from 'prop-types';
+import React, { Component, Fragment } from 'react';
 import { ActivityIndicator, Alert, AsyncStorage, ScrollView, View } from 'react-native';
 import { Dropdown } from 'react-native-material-dropdown';
 import { TextField } from 'react-native-material-textfield';
 import { ThemeProvider, Toolbar } from 'react-native-material-ui';
 import Snackbar from 'react-native-snackbar';
-import { formContainer, uiTheme } from '../../../consts/styles';
 import { LOCATION, TREES_STATES } from '../../../consts/appConsts';
+import { formContainer, uiTheme } from '../../../consts/styles';
 import NavigationService from '../../../services/NavigationService';
 import TreesService from '../../../services/TreesService';
 import AddressField from '../AddressField';
