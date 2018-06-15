@@ -4,21 +4,15 @@ import { AsyncStorage, ScrollView, StatusBar, View } from 'react-native';
 import { Dropdown } from 'react-native-material-dropdown';
 import { TextField } from 'react-native-material-textfield';
 import { COLOR, ThemeProvider, Toolbar } from 'react-native-material-ui';
-import { NavigationActions } from 'react-navigation';
 import { formContainer, uiTheme } from '../../consts/styles';
 import { LOCATION } from '../../consts/appConsts';
+import NavigationService from '../../services/NavigationService';
 import ProblemsService from '../../services/ProblemsService';
 import AddressField from './AddressField';
 
 class AddProblem extends Component {
   constructor(props) {
     super(props);
-
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleNameChange = this.handleNameChange.bind(this);
-    this.handleAddressChange = this.handleAddressChange.bind(this);
-    this.handleTypeChange = this.handleTypeChange.bind(this);
-    this.handleDescriptionChange = this.handleDescriptionChange.bind(this);
 
     this.state = {
       name: this.props.name,
@@ -86,9 +80,7 @@ class AddProblem extends Component {
             leftElement="close"
             centerElement="Описати проблему"
             rightElement="send"
-            onLeftElementPress={() => {
-              this.props.navigation.dispatch(NavigationActions.navigate({ routeName: 'Home' }));
-            }}
+            onLeftElementPress={NavigationService.goToHome}
             onRightElementPress={this.handleSubmit}
             style={{
               container: {
@@ -140,9 +132,6 @@ class AddProblem extends Component {
 }
 
 AddProblem.propTypes = {
-  navigation: PropTypes.shape({
-    dispatch: PropTypes.func.isRequired,
-  }).isRequired,
   name: PropTypes.string,
   address: PropTypes.shape({
     addressString: PropTypes.string,

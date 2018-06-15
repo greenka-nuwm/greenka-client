@@ -1,31 +1,20 @@
 import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
-import { AsyncStorage, View, StyleSheet, StatusBar } from 'react-native';
-import ActionButton from 'react-native-action-button';
+import { AsyncStorage, View, StatusBar } from 'react-native';
 import MapView from 'react-native-maps';
 import { COLOR, ThemeProvider, Toolbar } from 'react-native-material-ui';
-import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { NavigationActions } from 'react-navigation';
 import { ACTIVE_FILTERS, LOCATION } from '../consts/appConsts';
 import { drawerOverlayStyles, uiTheme } from '../consts/styles';
 import LocationService from '../services/LocationService';
+import NavigationService from '../services/NavigationService';
 import TreesService from '../services/TreesService';
+import GreenkaActionButton from './GreenkaActionButton';
 import MapFilters from './MapFilters';
-
-const styles = StyleSheet.create({
-  actionButtonIcon: {
-    fontSize: 20,
-    height: 22,
-    color: 'white',
-  },
-});
 
 class Main extends Component {
   constructor(props) {
     super(props);
-
-    this.onTopRowTabPress = this.onTopRowTabPress.bind(this);
 
     this.state = {
       location: LOCATION,
@@ -50,11 +39,12 @@ class Main extends Component {
     const healthy = await MaterialCommunityIcon.getImageSource('tree', 26, COLOR.green600);
     const broken = await MaterialCommunityIcon.getImageSource('tree', 26, COLOR.yellow600);
     const dying = await MaterialCommunityIcon.getImageSource('tree', 26, COLOR.red600);
-    const dry = await MaterialCommunityIcon.getImageSource('tree', 26, COLOR.black);
+    const dry = await MaterialCommunityIcon.getImageSource('tree', 26, COLOR.orange600);
     const toping = await MaterialCommunityIcon.getImageSource('tree', 26, COLOR.purple600);
     const mistletoe = await MaterialCommunityIcon.getImageSource('tree', 26, COLOR.blue600);
 
-    const trees = await TreesService.getAllTrees();
+    const trees = await TreesService.getTreesInRadius(this.state.location);
+    const filteredTrees = trees.filter(tree => activeFilters.includes(tree.tree_state));
 
     this.setState({
       icons: {
@@ -66,20 +56,9 @@ class Main extends Component {
         mistletoe,
       },
       activeFilters,
-      trees,
+      trees: filteredTrees,
       allTrees: trees,
     });
-  }
-
-  onTopRowTabPress(newTab) {
-    const newTabs = this.state.activeFilters.includes(newTab.key)
-      ? this.state.activeFilters.filter(key => key !== newTab.key)
-      : [...this.state.activeFilters, newTab.key];
-    const trees = this.state.allTrees.filter(tree => newTabs.includes(tree.tree_state));
-
-    this.setState({ activeFilters: newTabs, trees });
-
-    AsyncStorage.setItem('activeFilters', JSON.stringify(newTabs));
   }
 
   async setLocationToState() {
@@ -102,6 +81,30 @@ class Main extends Component {
     }));
   }
 
+  handleActiveTabsChange = newTab => {
+    const newTabs = this.state.activeFilters.includes(newTab.key)
+      ? this.state.activeFilters.filter(key => key !== newTab.key)
+      : [...this.state.activeFilters, newTab.key];
+    const trees = this.state.allTrees.filter(tree => newTabs.includes(tree.tree_state));
+
+    this.setState({ activeFilters: newTabs, trees });
+
+    AsyncStorage.setItem('activeFilters', JSON.stringify(newTabs));
+  };
+
+  // handleRegionChange = async location => {
+  //   const trees = await TreesService.getTreesInRadius(location);
+  //   const filteredTrees = trees
+  // .filter(tree => this.state.activeFilters.includes(tree.tree_state));
+  //
+  //   this.setState({
+  //     location,
+  //     trees: filteredTrees,
+  //     allTrees: trees,
+  //   });
+  //   AsyncStorage.setItem('location', JSON.stringify(location));
+  // };
+
   render() {
     return (
       <ThemeProvider uiTheme={uiTheme}>
@@ -114,27 +117,21 @@ class Main extends Component {
           <Toolbar
             leftElement="menu"
             centerElement="Greenka"
-            onLeftElementPress={() => this.props.navigation.openDrawer()}
+            onLeftElementPress={this.props.navigation.openDrawer}
           />
 
           <View style={drawerOverlayStyles.container}>
             <MapView
               style={drawerOverlayStyles.mapContainer}
               region={this.state.location}
+              // onRegionChangeComplete={this.handleRegionChange}
             >
               {this.state.trees.map(tree => (
                 <MapView.Marker
                   key={`marker-${tree.id}`}
-                  coordinate={{
-                    longitude: tree.longitude,
-                    latitude: tree.latitude,
-                  }}
+                  coordinate={{ longitude: tree.longitude, latitude: tree.latitude }}
                   image={this.state.icons[tree.tree_state]}
-                  onPress={() => {
-                    this.props.navigation.dispatch(
-                      NavigationActions.navigate({ routeName: 'TreeView', params: { tree } }),
-                    );
-                  }}
+                  onPress={() => NavigationService.goToTreeView(tree.id)}
                 />
               ))}
             </MapView>
@@ -142,46 +139,11 @@ class Main extends Component {
             <View style={drawerOverlayStyles.mapDrawerOverlay} />
           </View>
 
-          <View
-            style={{
-              flex: 1,
-              marginBottom: -10,
-              marginRight: -10,
-            }}
-          >
-            <ActionButton
-              buttonColor={uiTheme.palette.accentColor}
-              fixNativeFeedbackRadiusss
-            >
-              <ActionButton.Item
-                buttonColor={COLOR.green300}
-                size={50}
-                title="Внести дерево"
-                onPress={() => {
-                  this.props.navigation
-                    .dispatch(NavigationActions.navigate({ routeName: 'AddTree' }));
-                }}
-              >
-                <MaterialIcon name="local-florist" style={styles.actionButtonIcon} />
-              </ActionButton.Item>
-
-              <ActionButton.Item
-                buttonColor={COLOR.red300}
-                size={50}
-                title="Описати проблему"
-                onPress={() => {
-                  this.props.navigation
-                    .dispatch(NavigationActions.navigate({ routeName: 'AddProblem' }));
-                }}
-              >
-                <MaterialIcon name="report-problem" style={styles.actionButtonIcon} />
-              </ActionButton.Item>
-            </ActionButton>
-          </View>
+          <GreenkaActionButton />
 
           <MapFilters
             activeFilters={this.state.activeFilters}
-            onActiveTabsChange={this.onTopRowTabPress}
+            onActiveTabsChange={this.handleActiveTabsChange}
           />
         </Fragment>
       </ThemeProvider>
@@ -192,7 +154,6 @@ class Main extends Component {
 Main.propTypes = {
   navigation: PropTypes.shape({
     openDrawer: PropTypes.func.isRequired,
-    dispatch: PropTypes.func.isRequired,
   }).isRequired,
 };
 

@@ -16,41 +16,53 @@ export const ACTIVE_FILTERS = [
   'mistletoe',
 ];
 
-export const TREES_FILTERS = [
+export const TREES_STATES = [
   {
+    id: 0,
     key: 'healthy',
     icon: 'tree',
     label: 'Здорові',
+    value: 'Здорове',
     color: COLOR.green600,
   },
   {
+    id: 1,
     key: 'broken',
     icon: 'tree',
     label: 'Пошкоджені',
+    value: 'Пошкоджене',
     color: COLOR.yellow600,
   },
   {
+    id: 2,
     key: 'dying',
     icon: 'tree',
     label: 'Помирають',
+    value: 'Помирає',
     color: COLOR.red600,
   },
   {
+    id: 3,
     key: 'dry',
     icon: 'tree',
     label: 'Напівсухі та сухі',
-    color: COLOR.black,
+    value: 'Напівсухе або сухе',
+    color: COLOR.orange600,
   },
   {
+    id: 4,
     key: 'toping',
     icon: 'tree',
     label: 'Топінг',
+    value: 'Топінг',
     color: COLOR.purple600,
   },
   {
+    id: 5,
     key: 'mistletoe',
     icon: 'tree',
     label: 'Вражені омелою',
+    value: 'Вражене омелою',
     color: COLOR.blue600,
   },
 ];

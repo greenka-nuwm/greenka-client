@@ -1,40 +1,37 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Alert, Image } from 'react-native';
-import { NavigationActions } from 'react-navigation';
 import { Avatar, Drawer, ThemeProvider } from 'react-native-material-ui';
 import { MOCKED_USER } from '../consts/mockedData';
 import { uiTheme } from '../consts/styles';
+import NavigationService from '../services/NavigationService';
 
 const merge = require('lodash.merge');
 
-const Sidenav = ({ navigation, user }) => {
-  // TODO: style sidenav header font color and make darkened background
-  const getHeaderStyles = () => {};
+class Sidenav extends Component {
+// TODO: style sidenav header font color and make darkened background
+  getHeaderStyles = () => {};
 
-  const getHeaderOptions = () => (
-    user.profileImage
+  getHeaderOptions = () => (
+    this.props.user.profileImage
       ? {
-        image: <Image source={{ uri: user.profileImage }} />,
-        style: { ...getHeaderStyles() },
+        image: <Image source={{ uri: this.props.user.profileImage }} />,
+        style: { ...this.getHeaderStyles() },
       }
       : {
         style: merge(
           { contentContainer: { backgroundColor: uiTheme.palette.primaryColor } },
-          getHeaderStyles(),
+          this.getHeaderStyles(),
         ),
       }
   );
 
-  const exitDialog = () => {
+  exitDialog = () => {
     Alert.alert(
       '',
       'Ви впевнені, що бажаєте вийти?',
       [
-        {
-          text: 'Ні',
-          style: 'cancel',
-        },
+        { text: 'Ні', style: 'cancel' },
         {
           text: 'Так',
           onPress: () => {},
@@ -43,81 +40,80 @@ const Sidenav = ({ navigation, user }) => {
     );
   };
 
-  return (
-    <ThemeProvider uiTheme={uiTheme}>
-      <Drawer>
-        <Drawer.Header {...getHeaderOptions()}>
-          <Drawer.Header.Account
-            avatar={
-              user.avatar
-                ? <Avatar image={user.avatar} />
-                : <Avatar text={`${user.firstName[0]}${user.secondName[0]}`} />
-            }
-            footer={{
-              dense: true,
-              centerElement: {
-                primaryText: `${user.firstName} ${user.secondName}`,
-                secondaryText: user.email,
+  render() {
+    return (
+      <ThemeProvider uiTheme={uiTheme}>
+        <Drawer>
+          <Drawer.Header {...this.getHeaderOptions()}>
+            <Drawer.Header.Account
+              avatar={
+                this.props.user.avatar
+                  ? <Avatar image={this.props.user.avatar} />
+                  : <Avatar text={`${this.props.user.firstName[0]}${this.props.user.secondName[0]}`} />
+              }
+              footer={{
+                dense: true,
+                centerElement: {
+                  primaryText: `${this.props.user.firstName} ${this.props.user.secondName}`,
+                  secondaryText: this.props.user.email,
+                },
+              }}
+            />
+          </Drawer.Header>
+
+          <Drawer.Section
+            divider
+            items={[
+              {
+                icon: 'place',
+                value: 'Ваші місця',
+                onPress: NavigationService.goToPlaces,
               },
-            }}
+              {
+                icon: 'local-florist',
+                value: 'Внести дерево',
+                onPress: NavigationService.goToAddTree,
+              },
+              {
+                icon: 'report-problem',
+                value: 'Описати проблему',
+                onPress: NavigationService.goToAddProblem,
+              },
+            ]}
           />
-        </Drawer.Header>
 
-        <Drawer.Section
-          divider
-          items={[
-            {
-              icon: 'place',
-              value: 'Ваші місця',
-              onPress: () => navigation.dispatch(NavigationActions.navigate({ routeName: 'Places' })),
-            },
-            {
-              icon: 'local-florist',
-              value: 'Внести дерево',
-              onPress: () => navigation.dispatch(NavigationActions.navigate({ routeName: 'AddTree' })),
-            },
-            {
-              icon: 'report-problem',
-              value: 'Описати проблему',
-              onPress: () => navigation.dispatch(NavigationActions.navigate({ routeName: 'AddProblem' })),
-            },
-          ]}
-        />
+          <Drawer.Section
+            divider
+            items={[
+              {
+                icon: 'info',
+                value: 'Довідка',
+                onPress: NavigationService.goToInfo,
+              },
+              {
+                icon: 'chat-bubble',
+                value: 'Надіслати відгук',
+                onPress: NavigationService.goToAddResponse,
+              },
+            ]}
+          />
 
-        <Drawer.Section
-          divider
-          items={[
-            {
-              icon: 'info',
-              value: 'Довідка',
-              onPress: () => navigation.dispatch(NavigationActions.navigate({ routeName: 'Info' })),
-            },
-            {
-              icon: 'chat-bubble',
-              value: 'Надіслати відгук',
-              onPress: () => navigation.dispatch(NavigationActions.navigate({ routeName: 'AddResponse' })),
-            },
-          ]}
-        />
-
-        <Drawer.Section
-          items={[
-            {
-              icon: 'exit-to-app',
-              value: 'Вийти',
-              onPress: () => exitDialog(),
-            },
-          ]}
-        />
-      </Drawer>
-    </ThemeProvider>
-  );
-};
+          <Drawer.Section
+            items={[
+              {
+                icon: 'exit-to-app',
+                value: 'Вийти',
+                onPress: this.exitDialog,
+              },
+            ]}
+          />
+        </Drawer>
+      </ThemeProvider>
+    );
+  }
+}
 
 Sidenav.propTypes = {
-  navigation: PropTypes.shape({
-    navigate: PropTypes.func.isRequired,
-  }).isRequired,
   user: PropTypes.shape({
     firstName: PropTypes.string.isRequired,
     secondName: PropTypes.string.isRequired,

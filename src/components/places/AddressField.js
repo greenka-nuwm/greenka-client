@@ -32,10 +32,10 @@ class AddressField extends Component {
     };
   }
 
-  openSearchModal() {
+  openSearchModal = () => {
     RNGooglePlaces.openAutocompleteModal()
       .then(place => {
-        const address = update(this.props.address, {
+        const address = update(this.props, {
           addressString: { $set: place.address },
           location: {
             latitude: { $set: place.latitude },
@@ -46,27 +46,27 @@ class AddressField extends Component {
         this.props.onAddressChange(address);
       })
       .catch(error => console.log(error.message));
-  }
+  };
 
-  handleModalSubmit(address) {
+  handleModalSubmit = address => {
     this.props.onAddressChange(address);
     this.toggleModalVisibility();
-  }
+  };
 
-  toggleModalVisibility() {
+  toggleModalVisibility = () => {
     this.setState({ isModalVisible: !this.state.isModalVisible });
-  }
+  };
 
   render() {
     return (
       <View>
         <View>
-          <TouchableOpacity onPress={() => this.openSearchModal()}>
+          <TouchableOpacity onPress={this.openSearchModal}>
             <TextField
               multiline
               editable={false}
               label="Адреса*"
-              value={this.props.address.addressString}
+              value={this.props.addressString}
               error={this.props.showAddressError ? 'Вкажіть адресу' : ''}
             />
           </TouchableOpacity>
@@ -75,25 +75,26 @@ class AddressField extends Component {
         <View>
           <MapView
             style={StyleSheet.absoluteFillObject}
-            region={this.props.address.location}
+            region={this.props.location}
           />
 
           <Button
             style={{ text: styles.buttonText, container: styles.buttonContainer }}
             upperCase={false}
             text="Позначити місце на карті*"
-            onPress={() => this.toggleModalVisibility()}
+            onPress={this.toggleModalVisibility}
           />
 
           <Modal
             animationType="fade"
             visible={this.state.isModalVisible}
-            onRequestClose={() => this.toggleModalVisibility()}
+            onRequestClose={this.toggleModalVisibility}
           >
             <MapModal
-              address={this.props.address}
-              onClose={() => this.toggleModalVisibility()}
-              onSubmit={address => this.handleModalSubmit(address)}
+              addressString={this.props.addressString}
+              location={this.props.location}
+              onClose={this.toggleModalVisibility}
+              onSubmit={this.handleModalSubmit}
             />
           </Modal>
         </View>
@@ -103,14 +104,12 @@ class AddressField extends Component {
 }
 
 AddressField.propTypes = {
-  address: PropTypes.shape({
-    addressString: PropTypes.string.isRequired,
-    location: PropTypes.shape({
-      latitude: PropTypes.number.isRequired,
-      longitude: PropTypes.number.isRequired,
-      latitudeDelta: PropTypes.number.isRequired,
-      longitudeDelta: PropTypes.number.isRequired,
-    }).isRequired,
+  addressString: PropTypes.string.isRequired,
+  location: PropTypes.shape({
+    latitude: PropTypes.number.isRequired,
+    longitude: PropTypes.number.isRequired,
+    latitudeDelta: PropTypes.number.isRequired,
+    longitudeDelta: PropTypes.number.isRequired,
   }).isRequired,
   showAddressError: PropTypes.bool.isRequired,
   onAddressChange: PropTypes.func.isRequired,

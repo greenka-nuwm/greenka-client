@@ -1,5 +1,6 @@
 {
   "extends": "airbnb",
+  "parser": "babel-eslint",
   "rules": {
     "react/jsx-filename-extension": [
       "error",
@@ -15,7 +16,8 @@
     ],
     "function-paren-newline": "off",
     "arrow-parens": ["error", "as-needed"],
-    "react/no-did-mount-set-state": "off"
+    "react/no-did-mount-set-state": "off",
+    "class-methods-use-this": "off"
   },
   "globals": {
     "navigator": true

@@ -5,9 +5,9 @@ import { Dropdown } from 'react-native-material-dropdown';
 import { TextField } from 'react-native-material-textfield';
 import { ThemeProvider, Toolbar } from 'react-native-material-ui';
 import Snackbar from 'react-native-snackbar';
-import { NavigationActions } from 'react-navigation';
 import { formContainer, uiTheme } from '../../../consts/styles';
-import { LOCATION } from '../../../consts/appConsts';
+import { LOCATION, TREES_STATES } from '../../../consts/appConsts';
+import NavigationService from '../../../services/NavigationService';
 import TreesService from '../../../services/TreesService';
 import AddressField from '../AddressField';
 
@@ -15,20 +15,14 @@ class AddTree extends Component {
   constructor(props) {
     super(props);
 
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleAddressChange = this.handleAddressChange.bind(this);
-    this.handleStateChange = this.handleStateChange.bind(this);
-    this.handleTypeChange = this.handleTypeChange.bind(this);
-    this.handleSortChange = this.handleSortChange.bind(this);
-    this.handleDescriptionChange = this.handleDescriptionChange.bind(this);
-
     this.state = {
-      address: this.props.address,
+      addressString: this.props.addressString,
+      location: this.props.location,
       state: this.props.state,
       type: this.props.type,
       sort: this.props.sort,
       description: this.props.description,
-      states: [],
+      states: TREES_STATES,
       types: [],
       sorts: [],
       allSorts: [],
@@ -39,31 +33,28 @@ class AddTree extends Component {
 
   async componentDidMount() {
     const location = JSON.parse(await AsyncStorage.getItem('location'));
-    const states = await TreesService.getTreesStates();
     const types = await TreesService.getTreesTypes();
     const sorts = await TreesService.getTreesSorts();
 
     this.setState({
-      address: {
-        location,
-      },
-      states,
+      location,
+      userLocation: location,
       types,
       sorts,
       allSorts: sorts,
     });
   }
 
-  async handleSubmit() {
-    const showAddressError = this.state.address.addressString === '';
+  handleSubmit = async () => {
+    const showAddressError = this.state.addressString === '';
     const showStateError = this.state.state.value === '';
 
     this.setState({ showAddressError, showStateError });
 
     if (!(showAddressError || showStateError)) {
       const tree = {
-        latitude: this.state.address.location.latitude,
-        longitude: this.state.address.location.longitude,
+        latitude: this.state.location.latitude,
+        longitude: this.state.location.longitude,
         tree_state: this.state.state.id,
       };
 
@@ -83,7 +74,8 @@ class AddTree extends Component {
         await TreesService.create(tree);
 
         this.setState({
-          address: this.props.address,
+          addressString: this.props.addressString,
+          location: this.state.userLocation,
           state: this.props.state,
           type: this.props.type,
           sort: this.props.sort,
@@ -109,34 +101,38 @@ class AddTree extends Component {
         );
       }
     }
-  }
+  };
 
-  handleAddressChange(address) {
-    this.setState({ address, showAddressError: false });
-  }
+  handleAddressChange = address => {
+    this.setState({
+      addressString: address.addressString,
+      location: address.location,
+      showAddressError: false,
+    });
+  };
 
-  handleStateChange(value, index) {
+  handleStateChange = (value, index) => {
     this.setState({
       state: { id: index, value },
       showStateError: false,
     });
-  }
+  };
 
-  handleTypeChange(value, index) {
+  handleTypeChange = (value, index) => {
     this.setState({
       type: { id: index, value },
       sort: { id: null, value: '' },
       sorts: this.state.allSorts.filter(sort => sort.treeType === (index + 1)),
     });
-  }
+  };
 
-  handleSortChange(value, index) {
+  handleSortChange = (value, index) => {
     this.setState({ sort: { id: index, value } });
-  }
+  };
 
-  handleDescriptionChange(description) {
+  handleDescriptionChange = description => {
     this.setState({ description });
-  }
+  };
 
   render() {
     return (
@@ -146,20 +142,15 @@ class AddTree extends Component {
             leftElement="close"
             centerElement="Внести дерево"
             rightElement="send"
-            onLeftElementPress={() => {
-              this.props.navigation.dispatch(NavigationActions.navigate({ routeName: 'Home' }));
-            }}
+            onLeftElementPress={NavigationService.goToHome}
             onRightElementPress={this.handleSubmit}
-            style={{
-              container: {
-                elevation: 0,
-              },
-            }}
+            style={{ container: { elevation: 0 } }}
           />
 
           <ScrollView style={formContainer}>
             <AddressField
-              address={this.state.address}
+              addressString={this.state.addressString}
+              location={this.state.location}
               showAddressError={this.state.showAddressError}
               onAddressChange={this.handleAddressChange}
             />
@@ -208,17 +199,12 @@ class AddTree extends Component {
 }
 
 AddTree.propTypes = {
-  navigation: PropTypes.shape({
-    dispatch: PropTypes.func.isRequired,
-  }).isRequired,
-  address: PropTypes.shape({
-    addressString: PropTypes.string,
-    location: PropTypes.shape({
-      latitude: PropTypes.number,
-      longitude: PropTypes.number,
-      latitudeDelta: PropTypes.number,
-      longitudeDelta: PropTypes.number,
-    }),
+  addressString: PropTypes.string,
+  location: PropTypes.shape({
+    latitude: PropTypes.number,
+    longitude: PropTypes.number,
+    latitudeDelta: PropTypes.number,
+    longitudeDelta: PropTypes.number,
   }),
   state: PropTypes.shape({
     id: PropTypes.number,
@@ -236,7 +222,8 @@ AddTree.propTypes = {
 };
 
 AddTree.defaultProps = {
-  address: { addressString: '', location: LOCATION },
+  addressString: '',
+  location: LOCATION,
   state: { id: 0, value: '' },
   type: { id: 0, value: '' },
   sort: { id: 0, value: '' },

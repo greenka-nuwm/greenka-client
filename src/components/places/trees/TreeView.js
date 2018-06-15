@@ -12,13 +12,13 @@ import {
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { COLOR, ListItem, ThemeProvider, Toolbar } from 'react-native-material-ui';
-import { NavigationActions } from 'react-navigation';
 import Swiper from 'react-native-swiper';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { ACTIVE_FILTERS, TREES_FILTERS } from '../../../consts/appConsts';
+import { TREES_STATES } from '../../../consts/appConsts';
 import { uiTheme } from '../../../consts/styles';
 import PlaceholderImage from '../../../assets/images/placeholder.png';
 import LocationService from '../../../services/LocationService';
+import NavigationService from '../../../services/NavigationService';
 import TreesService from '../../../services/TreesService';
 
 const styles = StyleSheet.create({
@@ -47,13 +47,6 @@ const styles = StyleSheet.create({
     height: Dimensions.get('window').height / 3,
     resizeMode: 'cover',
   },
-  listItemLeftElement: {
-    color: uiTheme.palette.primaryColor,
-  },
-  listItemPrimaryText: {
-    fontSize: 16,
-    color: COLOR.black,
-  },
   text: {
     flex: 1,
     flexWrap: 'wrap',
@@ -68,23 +61,15 @@ class TreeView extends Component {
 
     this.state = {
       isDataFetched: false,
-      tree: this.props.navigation.getParam('tree', {}),
       address: '',
-      states: [],
-      types: [],
-      sorts: [],
     };
   }
 
   async componentDidMount() {
-    const states = await TreesService.getTreesStates();
-    const types = await TreesService.getTreesTypes();
-    const sorts = await TreesService.getTreesSorts();
+    const tree = await TreesService.getTreeById(this.props.navigation.getParam('id', null));
 
     this.setState({
-      states,
-      types,
-      sorts,
+      tree,
       isDataFetched: true,
     });
 
@@ -98,10 +83,9 @@ class TreeView extends Component {
     }
   }
 
-  static getMultilineListItem(icon, text) {
+  getMultilineListItem(icon, text) {
     return (
       <ListItem
-        style={{ leftElement: styles.listItemLeftElement }}
         leftElement={icon}
         centerElement={
           <View style={{ flexDirection: 'row' }}>
@@ -112,20 +96,16 @@ class TreeView extends Component {
     );
   }
 
-  static getListItem(icon, text, color) {
+  getListItem(icon, text, color) {
     return (
       <ListItem
         style={{
-          leftElement: styles.listItemLeftElement,
-          primaryText: styles.listItemPrimaryText,
+          primaryText: {
+            fontSize: 16,
+            color: color || COLOR.black,
+          },
         }}
-        leftElement={
-          <MaterialCommunityIcon
-            name={icon}
-            size={24}
-            color={color || uiTheme.palette.primaryColor}
-          />
-        }
+        leftElement={<MaterialCommunityIcon name={icon} size={24} color={color} />}
         centerElement={text}
       />
     );
@@ -149,10 +129,8 @@ class TreeView extends Component {
           <Toolbar
             leftElement="arrow-back"
             // rightElement="edit"
-            onLeftElementPress={() => {
-              this.props.navigation.dispatch(NavigationActions.navigate({ routeName: 'Home' }));
-            }}
-            onRightElementPress={() => {}}
+            onLeftElementPress={NavigationService.goToHome}
+            // onRightElementPress={() => {}}
             style={{ container: styles.toolbarContainer }}
           />
 
@@ -179,27 +157,27 @@ class TreeView extends Component {
           }
 
           <ScrollView style={{ marginTop: 10 }}>
-            {TreeView.getMultilineListItem('place', this.state.address)}
+            {this.getMultilineListItem('place', this.state.address)}
 
-            {TreeView.getListItem(
+            {this.getListItem(
               'heart-pulse',
-              this.state.states[ACTIVE_FILTERS.indexOf(this.state.tree.tree_state)].value,
-              TREES_FILTERS[ACTIVE_FILTERS.indexOf(this.state.tree.tree_state)].color,
-            )}
-
-            {TreeView.getListItem(
-              'pine-tree',
-              this.state.types[this.state.tree.tree_type - 1].value,
-            )}
-
-            {TreeView.getListItem(
-              'tree',
-              this.state.sorts[this.state.tree.tree_sort - 1].value,
+              TREES_STATES[this.state.tree.tree_state].value,
+              TREES_STATES[this.state.tree.tree_state].color,
             )}
 
             {
+              this.state.tree.tree_type
+              && this.getListItem('pine-tree', this.state.tree.tree_type.name)
+            }
+
+            {
+              this.state.tree.tree_sort
+              && this.getListItem('tree', this.state.tree.tree_sort.name)
+            }
+
+            {
               this.state.tree.description !== ''
-              && TreeView.getMultilineListItem('note', this.state.tree.description)
+              && this.getMultilineListItem('note', this.state.tree.description)
             }
           </ScrollView>
         </Fragment>
@@ -222,7 +200,6 @@ class TreeView extends Component {
 
 TreeView.propTypes = {
   navigation: PropTypes.shape({
-    dispatch: PropTypes.func.isRequired,
     getParam: PropTypes.func.isRequired,
   }).isRequired,
 };

@@ -1,11 +1,11 @@
 import React, { Fragment } from 'react';
-import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';
 import { StatusBar } from 'react-native';
 import { COLOR, ThemeProvider, Toolbar } from 'react-native-material-ui';
-import { NavigationActions } from 'react-navigation';
 import { uiTheme } from '../../consts/styles';
+import NavigationService from '../../services/NavigationService';
 
-const Places = props => (
+const Places = () => (
   <ThemeProvider uiTheme={uiTheme}>
     <Fragment>
       <StatusBar
@@ -16,18 +16,13 @@ const Places = props => (
       <Toolbar
         leftElement="arrow-back"
         centerElement="Ваші місця"
-        onLeftElementPress={() => {
-          props.navigation.dispatch(NavigationActions.navigate({ routeName: 'Home' }));
-        }}
+        onLeftElementPress={NavigationService.goToHome}
       />
     </Fragment>
   </ThemeProvider>
 );
 
 Places.propTypes = {
-  navigation: PropTypes.shape({
-    dispatch: PropTypes.func.isRequired,
-  }).isRequired,
 };
 
 export default Places;

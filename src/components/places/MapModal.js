@@ -11,12 +11,13 @@ class MapModal extends PureComponent {
   constructor(props) {
     super(props);
 
-    this.state = this.props.address;
+    this.state = {
+      addressString: this.props.addressString,
+      location: this.props.location,
+    };
   }
 
-  handleOnMapPress(event) {
-    const { coordinate } = event.nativeEvent;
-
+  handleOnMapPress = ({ nativeEvent: { coordinate } }) => {
     LocationService.geocodePosition(coordinate).then(address => {
       this.setState(update(this.state, {
         addressString: { $set: address.formattedAddress },
@@ -26,7 +27,9 @@ class MapModal extends PureComponent {
         },
       }));
     });
-  }
+  };
+
+  handleSubmit = () => this.props.onSubmit(this.state);
 
   render() {
     return (
@@ -41,7 +44,7 @@ class MapModal extends PureComponent {
           centerElement="Торкніться місця на карті"
           rightElement={this.state.addressString !== '' ? 'send' : ''}
           onLeftElementPress={this.props.onClose}
-          onRightElementPress={() => this.props.onSubmit(this.state)}
+          onRightElementPress={this.handleSubmit}
         />
 
         {
@@ -53,11 +56,9 @@ class MapModal extends PureComponent {
         <MapView
           style={mapStyles}
           region={this.state.location}
-          onPress={event => this.handleOnMapPress(event)}
+          onPress={this.handleOnMapPress}
         >
-          <MapView.Marker
-            coordinate={this.state.location}
-          />
+          <MapView.Marker coordinate={this.state.location} />
         </MapView>
       </View>
     );
@@ -65,14 +66,12 @@ class MapModal extends PureComponent {
 }
 
 MapModal.propTypes = {
-  address: PropTypes.shape({
-    addressString: PropTypes.string.isRequired,
-    location: PropTypes.shape({
-      latitude: PropTypes.number.isRequired,
-      longitude: PropTypes.number.isRequired,
-      latitudeDelta: PropTypes.number.isRequired,
-      longitudeDelta: PropTypes.number.isRequired,
-    }).isRequired,
+  addressString: PropTypes.string.isRequired,
+  location: PropTypes.shape({
+    latitude: PropTypes.number.isRequired,
+    longitude: PropTypes.number.isRequired,
+    latitudeDelta: PropTypes.number.isRequired,
+    longitudeDelta: PropTypes.number.isRequired,
   }).isRequired,
   onClose: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,

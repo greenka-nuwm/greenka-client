@@ -9,14 +9,11 @@ import {
 } from 'react-native-material-ui';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { uiTheme } from '../consts/styles';
-import { TREES_FILTERS } from '../consts/appConsts';
+import { TREES_STATES } from '../consts/appConsts';
 
 class MapFilters extends Component {
   constructor(props) {
     super(props);
-
-    this.onShowFilters = this.onShowFilters.bind(this);
-    this.onTabPress = this.onTabPress.bind(this);
 
     this.state = {
       filtersButtonsHeight: 0,
@@ -25,7 +22,7 @@ class MapFilters extends Component {
     };
   }
 
-  onShowFilters() {
+  onShowFilters = () => {
     this.setState({
       filtersButtonsHeight: Math.abs(this.state.filtersButtonsHeight - 56),
     });
@@ -37,25 +34,23 @@ class MapFilters extends Component {
     if (this.state.problemsHeight > 0) {
       this.setState({ problemsHeight: 0 });
     }
-  }
+  };
 
-  onTabPress(tab) {
-    this.setState({ active: tab });
+  handleTreesPress = () => {
+    this.setState({
+      active: 'trees',
+      treesHeight: Math.abs(this.state.treesHeight - 122),
+      problemsHeight: 0,
+    });
+  };
 
-    if (tab === 'trees') {
-      this.setState({
-        treesHeight: Math.abs(this.state.treesHeight - 122),
-        problemsHeight: 0,
-      });
-    }
-
-    if (tab === 'problems') {
-      this.setState({
-        treesHeight: 0,
-        problemsHeight: Math.abs(this.state.problemsHeight - 122),
-      });
-    }
-  }
+  handleProblemsPress = () => {
+    this.setState({
+      active: 'problems',
+      treesHeight: 0,
+      problemsHeight: Math.abs(this.state.problemsHeight - 122),
+    });
+  };
 
   render() {
     return (
@@ -85,13 +80,13 @@ class MapFilters extends Component {
               key="trees"
               icon="local-florist"
               label="Дерева"
-              onPress={() => this.onTabPress('trees')}
+              onPress={this.handleTreesPress}
             />
             <BottomNavigation.Action
               key="problems"
               icon="report-problem"
               label="Проблеми"
-              onPress={() => this.onTabPress('problems')}
+              onPress={this.handleProblemsPress}
             />
           </BottomNavigation>
 
@@ -111,7 +106,7 @@ class MapFilters extends Component {
                 alignItems: 'flex-start',
               }}
             >
-              {TREES_FILTERS.slice(0, 3).map(tab => (
+              {TREES_STATES.slice(0, 3).map(tab => (
                 <Button
                   upperCase={false}
                   key={tab.key}
@@ -143,7 +138,7 @@ class MapFilters extends Component {
                 alignItems: 'flex-start',
               }}
             >
-              {TREES_FILTERS.slice(3).map(tab => (
+              {TREES_STATES.slice(3).map(tab => (
                 <Button
                   upperCase={false}
                   key={tab.key}

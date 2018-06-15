@@ -1,12 +1,11 @@
 import axios from 'axios';
 import React, { Component, Fragment } from 'react';
-import PropTypes from 'prop-types';
 import { ScrollView, Keyboard, Alert, StatusBar } from 'react-native';
 import { TextField } from 'react-native-material-textfield';
 import { COLOR, ThemeProvider, Toolbar } from 'react-native-material-ui';
 import Snackbar from 'react-native-snackbar';
-import { NavigationActions } from 'react-navigation';
 import { formContainer, uiTheme } from '../consts/styles';
+import NavigationService from '../services/NavigationService';
 
 class AddResponse extends Component {
   constructor(props) {
@@ -17,7 +16,7 @@ class AddResponse extends Component {
     };
   }
 
-  async onSubmit() {
+  onSubmit = async () => {
     Keyboard.dismiss();
 
     // TODO: add endpoint
@@ -34,15 +33,14 @@ class AddResponse extends Component {
       Alert.alert(
         '',
         'Не вдалось надіслати',
-        [
-          {
-            text: 'Ок',
-            style: 'cancel',
-          },
-        ],
+        [{ text: 'Ок', style: 'cancel' }],
       );
     }
-  }
+  };
+
+  onChangeText = response => {
+    this.setState({ response });
+  };
 
   render() {
     return (
@@ -57,10 +55,8 @@ class AddResponse extends Component {
             leftElement="close"
             centerElement="Надіслати відгук"
             rightElement={this.state.response !== '' ? 'send' : ''}
-            onLeftElementPress={() => {
-              this.props.navigation.dispatch(NavigationActions.navigate({ routeName: 'Home' }));
-            }}
-            onRightElementPress={() => this.onSubmit()}
+            onLeftElementPress={NavigationService.goToHome}
+            onRightElementPress={this.onSubmit}
           />
 
           <ScrollView style={formContainer}>
@@ -70,7 +66,7 @@ class AddResponse extends Component {
               label=""
               placeholder="Відгук"
               value={this.state.response}
-              onChangeText={response => this.setState({ response })}
+              onChangeText={this.onChangeText}
             />
           </ScrollView>
         </Fragment>
@@ -78,11 +74,5 @@ class AddResponse extends Component {
     );
   }
 }
-
-AddResponse.propTypes = {
-  navigation: PropTypes.shape({
-    dispatch: PropTypes.func.isRequired,
-  }).isRequired,
-};
 
 export default AddResponse;
