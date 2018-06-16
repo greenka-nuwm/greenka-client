@@ -9,6 +9,7 @@ import { LOCATION, TREES_STATES } from '../../../consts/appConsts';
 import { formContainer, uiTheme } from '../../../consts/styles';
 import NavigationService from '../../../services/NavigationService';
 import TreesService from '../../../services/TreesService';
+import { locationType, objectType } from '../../../types';
 import AddressField from '../AddressField';
 
 class AddTree extends Component {
@@ -211,24 +212,10 @@ class AddTree extends Component {
 
 AddTree.propTypes = {
   addressString: PropTypes.string,
-  location: PropTypes.shape({
-    latitude: PropTypes.number,
-    longitude: PropTypes.number,
-    latitudeDelta: PropTypes.number,
-    longitudeDelta: PropTypes.number,
-  }),
-  state: PropTypes.shape({
-    id: PropTypes.number,
-    value: PropTypes.string,
-  }),
-  type: PropTypes.shape({
-    id: PropTypes.number,
-    value: PropTypes.string,
-  }),
-  sort: PropTypes.shape({
-    id: PropTypes.number,
-    value: PropTypes.string,
-  }),
+  location: locationType,
+  state: objectType,
+  type: objectType,
+  sort: objectType,
   description: PropTypes.string,
 };
 

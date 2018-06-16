@@ -6,6 +6,7 @@ import MapView from 'react-native-maps';
 import { COLOR, Subheader, Toolbar } from 'react-native-material-ui';
 import { containerStyles, mapStyles } from '../../consts/styles';
 import LocationService from '../../services/LocationService';
+import { locationType } from '../../types';
 
 class MapModal extends PureComponent {
   constructor(props) {
@@ -67,12 +68,7 @@ class MapModal extends PureComponent {
 
 MapModal.propTypes = {
   addressString: PropTypes.string.isRequired,
-  location: PropTypes.shape({
-    latitude: PropTypes.number.isRequired,
-    longitude: PropTypes.number.isRequired,
-    latitudeDelta: PropTypes.number.isRequired,
-    longitudeDelta: PropTypes.number.isRequired,
-  }).isRequired,
+  location: locationType.isRequired,
   onClose: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
 };

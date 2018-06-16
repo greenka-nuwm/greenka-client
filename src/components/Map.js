@@ -6,6 +6,7 @@ import { COLOR } from 'react-native-material-ui';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { drawerOverlayStyles } from '../consts/styles';
 import NavigationService from '../services/NavigationService';
+import { locationType } from '../types';
 
 class Map extends Component {
   async componentDidMount() {
@@ -61,12 +62,7 @@ class Map extends Component {
 
 // TODO: specify types
 Map.propTypes = {
-  location: PropTypes.shape({
-    latitude: PropTypes.number.isRequired,
-    longitude: PropTypes.number.isRequired,
-    latitudeDelta: PropTypes.number.isRequired,
-    longitudeDelta: PropTypes.number.isRequired,
-  }).isRequired,
+  location: locationType.isRequired,
   trees: PropTypes.arrayOf().isRequired,
   problems: PropTypes.arrayOf().isRequired,
   // onRegionChange: PropTypes.func.isRequired,

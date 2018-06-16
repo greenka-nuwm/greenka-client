@@ -6,6 +6,7 @@ import RNGooglePlaces from 'react-native-google-places';
 import MapView from 'react-native-maps';
 import { TextField } from 'react-native-material-textfield';
 import { Button } from 'react-native-material-ui';
+import { locationType } from '../../types';
 import MapModal from './MapModal';
 
 const styles = StyleSheet.create({
@@ -105,12 +106,7 @@ class AddressField extends Component {
 
 AddressField.propTypes = {
   addressString: PropTypes.string.isRequired,
-  location: PropTypes.shape({
-    latitude: PropTypes.number.isRequired,
-    longitude: PropTypes.number.isRequired,
-    latitudeDelta: PropTypes.number.isRequired,
-    longitudeDelta: PropTypes.number.isRequired,
-  }).isRequired,
+  location: locationType.isRequired,
   showAddressError: PropTypes.bool.isRequired,
   onAddressChange: PropTypes.func.isRequired,
 };

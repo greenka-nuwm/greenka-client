@@ -9,6 +9,7 @@ import { LOCATION } from '../../../consts/appConsts';
 import { formContainer, uiTheme } from '../../../consts/styles';
 import NavigationService from '../../../services/NavigationService';
 import ProblemsService from '../../../services/ProblemsService';
+import { locationType, objectType } from '../../../types';
 import AddressField from '../AddressField';
 
 class AddProblem extends Component {
@@ -173,16 +174,8 @@ class AddProblem extends Component {
 
 AddProblem.propTypes = {
   addressString: PropTypes.string,
-  location: PropTypes.shape({
-    latitude: PropTypes.number,
-    longitude: PropTypes.number,
-    latitudeDelta: PropTypes.number,
-    longitudeDelta: PropTypes.number,
-  }),
-  type: PropTypes.shape({
-    id: PropTypes.number,
-    value: PropTypes.string,
-  }),
+  location: locationType,
+  type: objectType,
   description: PropTypes.string,
 };
 

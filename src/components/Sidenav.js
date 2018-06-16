@@ -5,6 +5,7 @@ import { Avatar, Drawer, ThemeProvider } from 'react-native-material-ui';
 import { MOCKED_USER } from '../consts/mockedData';
 import { uiTheme } from '../consts/styles';
 import NavigationService from '../services/NavigationService';
+import { userType } from '../types';
 
 const merge = require('lodash.merge');
 
@@ -126,13 +127,7 @@ class Sidenav extends Component {
 }
 
 Sidenav.propTypes = {
-  user: PropTypes.shape({
-    firstName: PropTypes.string.isRequired,
-    secondName: PropTypes.string.isRequired,
-    email: PropTypes.string.isRequired,
-    avatar: PropTypes.string,
-    profileImage: PropTypes.string,
-  }),
+  user: userType,
   navigation: PropTypes.shape({
     state: PropTypes.shape({
       isDrawerOpen: PropTypes.bool.isRequired,
