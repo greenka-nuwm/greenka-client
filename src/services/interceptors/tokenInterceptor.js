@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { AsyncStorage } from 'react-native';
+import AsyncStorage from 'rn-async-storage';
 
 axios.interceptors.request.use(config => {
   const newConfig = { ...config };

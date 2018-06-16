@@ -1,7 +1,8 @@
 import PropTypes from 'prop-types';
 import React, { Component, Fragment } from 'react';
-import { AsyncStorage, StatusBar } from 'react-native';
+import { StatusBar } from 'react-native';
 import { COLOR, ThemeProvider, Toolbar } from 'react-native-material-ui';
+import AsyncStorage from 'rn-async-storage';
 import { ACTIVE_FILTERS, LOCATION } from '../consts/appConsts';
 import { uiTheme } from '../consts/styles';
 import LocationService from '../services/LocationService';
@@ -11,9 +12,13 @@ import GreenkaActionButton from './GreenkaActionButton';
 import Map from './Map';
 import MapFilters from './MapFilters';
 
+const debounce = require('lodash.debounce');
+
 class Main extends Component {
   constructor(props) {
     super(props);
+
+    this.debounced = debounce(this.handleRegionChangeComplete, 750);
 
     this.state = {
       location: LOCATION,
@@ -25,47 +30,32 @@ class Main extends Component {
   }
 
   async componentDidMount() {
-    const location = JSON.parse(await AsyncStorage.getItem('location'));
-
-    this.setState({ location });
+    let location = JSON.parse(await AsyncStorage.getItem('location')) || LOCATION;
+    const activeFilters = JSON.parse(await AsyncStorage.getItem('activeFilters')) || ACTIVE_FILTERS;
 
     if (LocationService.getLocationPermission()) {
-      await this.setLocationToState();
-    }
+      const position = await LocationService.getCurrentPosition();
 
-    const activeFilters = JSON.parse(await AsyncStorage.getItem('activeFilters'));
-
-    const trees = await TreesService.getTreesInRadius(this.state.location);
-    const filteredTrees = trees.filter(tree => activeFilters.includes(tree.tree_state));
-
-    const problems = await ProblemsService.getProblemsInRadius(this.state.location);
-
-    this.setState({
-      activeFilters,
-      trees: filteredTrees,
-      allTrees: trees,
-      problems,
-    });
-  }
-
-  async setLocationToState() {
-    const position = await LocationService.getCurrentPosition();
-
-    this.setState({
-      location: {
+      location = {
         latitude: position.coords.latitude,
         longitude: position.coords.longitude,
         latitudeDelta: 0.01,
         longitudeDelta: 0.01,
-      },
-    });
+      };
 
-    AsyncStorage.setItem('location', JSON.stringify({
-      latitude: position.coords.latitude,
-      longitude: position.coords.longitude,
-      latitudeDelta: 0.01,
-      longitudeDelta: 0.01,
-    }));
+      AsyncStorage.setItem('location', JSON.stringify(location));
+    }
+
+    const trees = await TreesService.getTreesInRadius(location);
+    const filteredTrees = trees.filter(tree => activeFilters.includes(tree.tree_state));
+    const problems = await ProblemsService.getProblemsInRadius(location);
+
+    this.setState({
+      location,
+      trees: filteredTrees,
+      allTrees: trees,
+      problems,
+    });
   }
 
   handleActiveTabsChange = newTab => {
@@ -79,18 +69,19 @@ class Main extends Component {
     AsyncStorage.setItem('activeFilters', JSON.stringify(newTabs));
   };
 
-  // handleRegionChange = async location => {
-  //   const trees = await TreesService.getTreesInRadius(location);
-  //   const filteredTrees = trees
-  // .filter(tree => this.state.activeFilters.includes(tree.tree_state));
-  //
-  //   this.setState({
-  //     location,
-  //     trees: filteredTrees,
-  //     allTrees: trees,
-  //   });
-  //   AsyncStorage.setItem('location', JSON.stringify(location));
-  // };
+  handleRegionChangeComplete = async location => {
+    const trees = await TreesService.getTreesInRadius(location);
+    const filteredTrees = trees
+      .filter(tree => this.state.activeFilters.includes(tree.tree_state));
+
+    this.setState({
+      location,
+      trees: filteredTrees,
+      allTrees: trees,
+    });
+
+    AsyncStorage.setItem('location', JSON.stringify(location));
+  };
 
   render() {
     return (
@@ -112,7 +103,7 @@ class Main extends Component {
             location={this.state.location}
             trees={this.state.trees}
             problems={this.state.problems}
-            // onRegionChange={this.handleRegionChange}
+            onRegionChange={this.debounced}
           />
 
           <GreenkaActionButton />

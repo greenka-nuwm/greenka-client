@@ -14,7 +14,7 @@ class LocationService {
 
   static getLocationPermission() {
     return Boolean(PermissionsAndroid.request(
-      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+      PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION,
     ));
   }
 

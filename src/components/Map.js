@@ -35,7 +35,7 @@ class Map extends Component {
         <MapView
           style={drawerOverlayStyles.mapContainer}
           region={this.props.location}
-          // onRegionChangeComplete={this.onRegionChange}
+          onRegionChange={this.props.onRegionChange}
         >
           {this.props.trees.map(tree => (
             <MapView.Marker
@@ -65,7 +65,7 @@ Map.propTypes = {
   location: locationType.isRequired,
   trees: PropTypes.arrayOf().isRequired,
   problems: PropTypes.arrayOf().isRequired,
-  // onRegionChange: PropTypes.func.isRequired,
+  onRegionChange: PropTypes.func.isRequired,
 };
 
 export default Map;

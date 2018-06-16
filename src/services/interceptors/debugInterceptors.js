@@ -1,7 +1,15 @@
 import axios from 'axios';
 
 axios.interceptors.request.use(
-  config => config,
+  config => {
+    console.log(
+      `Request: ${config.method.toUpperCase()} ${config.url} ${JSON.stringify(
+        config.params,
+      )} ${JSON.stringify(config.data)}`,
+    );
+
+    return config;
+  },
   error => {
     console.log(error.response ? error.response.data : error.response);
 
@@ -10,7 +18,11 @@ axios.interceptors.request.use(
 );
 
 axios.interceptors.response.use(
-  config => config,
+  config => {
+    console.log(`Response: ${config.status}, ${JSON.stringify(config.data)}`);
+
+    return config;
+  },
   error => {
     console.log(error.response ? error.response.data : error.response);
 

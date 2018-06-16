@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { Component, Fragment } from 'react';
-import { ActivityIndicator, Alert, AsyncStorage, ScrollView, View } from 'react-native';
+import { ActivityIndicator, Alert, ScrollView, View } from 'react-native';
+import AsyncStorage from 'rn-async-storage';
 import { Dropdown } from 'react-native-material-dropdown';
 import { TextField } from 'react-native-material-textfield';
 import { ThemeProvider, Toolbar } from 'react-native-material-ui';

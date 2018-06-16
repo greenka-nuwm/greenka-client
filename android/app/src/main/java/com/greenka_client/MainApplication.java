@@ -13,6 +13,7 @@ import com.devfd.RNGeocoder.RNGeocoderPackage;
 import com.arttitude360.reactnative.rngoogleplaces.RNGooglePlacesPackage;
 import com.azendoo.reactnativesnackbar.SnackbarPackage;
 import com.BV.LinearGradient.LinearGradientPackage;
+import org.gamega.RNAsyncStoragePackage;
 
 import java.util.Arrays;
 import java.util.List;
@@ -34,7 +35,8 @@ public class MainApplication extends Application implements ReactApplication {
           new RNGeocoderPackage(),
           new RNGooglePlacesPackage(),
           new SnackbarPackage(),
-          new LinearGradientPackage()
+          new LinearGradientPackage(),
+          new RNAsyncStoragePackage()
       );
     }
 
