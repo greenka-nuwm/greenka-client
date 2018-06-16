@@ -3,7 +3,7 @@ import React, { Component, Fragment } from 'react';
 import { Alert, Keyboard, ScrollView, StatusBar } from 'react-native';
 import { TextField } from 'react-native-material-textfield';
 import { COLOR, ThemeProvider, Toolbar } from 'react-native-material-ui';
-import Snackbar from 'react-native-snackbar';
+import SnackBar from 'react-native-snackbar';
 import { formContainer, uiTheme } from '../consts/styles';
 import NavigationService from '../services/NavigationService';
 
@@ -25,9 +25,9 @@ class AddResponse extends Component {
 
       this.setState({ response: '' });
 
-      Snackbar.show({
+      SnackBar.show({
         title: 'Відгук надіслано',
-        duration: Snackbar.LENGTH_SHORT,
+        duration: SnackBar.LENGTH_SHORT,
       });
     } catch (e) {
       Alert.alert(

@@ -4,7 +4,7 @@ import { ActivityIndicator, Alert, AsyncStorage, ScrollView, StatusBar, View } f
 import { Dropdown } from 'react-native-material-dropdown';
 import { TextField } from 'react-native-material-textfield';
 import { COLOR, ThemeProvider, Toolbar } from 'react-native-material-ui';
-import Snackbar from 'react-native-snackbar';
+import SnackBar from 'react-native-snackbar';
 import { LOCATION } from '../../../consts/appConsts';
 import { formContainer, uiTheme } from '../../../consts/styles';
 import NavigationService from '../../../services/NavigationService';
@@ -121,9 +121,9 @@ class AddProblem extends Component {
           showTypeError: false,
         });
 
-        Snackbar.show({
+        SnackBar.show({
           title: 'Проблему внесено',
-          duration: Snackbar.LENGTH_SHORT,
+          duration: SnackBar.LENGTH_SHORT,
         });
       } catch (e) {
         Alert.alert(

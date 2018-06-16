@@ -4,7 +4,7 @@ import { ActivityIndicator, Alert, AsyncStorage, ScrollView, View } from 'react-
 import { Dropdown } from 'react-native-material-dropdown';
 import { TextField } from 'react-native-material-textfield';
 import { ThemeProvider, Toolbar } from 'react-native-material-ui';
-import Snackbar from 'react-native-snackbar';
+import SnackBar from 'react-native-snackbar';
 import { LOCATION, TREES_STATES } from '../../../consts/appConsts';
 import { formContainer, uiTheme } from '../../../consts/styles';
 import NavigationService from '../../../services/NavigationService';
@@ -147,9 +147,9 @@ class AddTree extends Component {
           showStateError: false,
         });
 
-        Snackbar.show({
+        SnackBar.show({
           title: 'Дерево внесено',
-          duration: Snackbar.LENGTH_SHORT,
+          duration: SnackBar.LENGTH_SHORT,
         });
       } catch (e) {
         Alert.alert(
