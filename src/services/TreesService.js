@@ -14,7 +14,7 @@ class TreesService {
         radius,
         center: `${region.latitude},${region.longitude}`,
       },
-    })).data.map(tree => ({ ...tree, tree_state: ACTIVE_FILTERS[tree.tree_state] }));
+    })).data.map(tree => ({ ...tree, tree_state: ACTIVE_FILTERS[tree.tree_state - 1] }));
   }
 
   static async getTreeById(id) {

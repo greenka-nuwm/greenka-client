@@ -13,7 +13,7 @@ axios.interceptors.request.use(config => {
     // newConfig.headers.common.Authorization = `Token ${token}`;
   }
   // TODO: delete when user authentication will be done
-  newConfig.headers.common.Authorization = 'Token aac57bf2874787388c8baa12ecbf0fefe0c5737f';
+  newConfig.headers.common.Authorization = 'Token 0021e99efc3bf4fcbd3a673f2082ee502a74a3ec';
 
   return newConfig;
 });

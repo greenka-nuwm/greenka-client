@@ -13,8 +13,8 @@ import {
 import LinearGradient from 'react-native-linear-gradient';
 import { COLOR, ListItem, ThemeProvider, Toolbar } from 'react-native-material-ui';
 import Swiper from 'react-native-swiper';
-import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import PlaceholderImage from '../../../assets/images/placeholder.png';
+import { PROBLEMS_ICONS } from '../../../consts/appConsts';
 import { uiTheme } from '../../../consts/styles';
 import LocationService from '../../../services/LocationService';
 import NavigationService from '../../../services/NavigationService';
@@ -66,9 +66,13 @@ class ProblemView extends Component {
   async componentDidMount() {
     const problem = await ProblemsService
       .getProblemById(this.props.navigation.getParam('id', null));
+    const typeIconObject = Object.keys(PROBLEMS_ICONS).includes(problem.problem_type.name)
+      ? PROBLEMS_ICONS[problem.problem_type.name]
+      : PROBLEMS_ICONS.other;
 
     this.setState({
       problem,
+      typeIconObject,
       isDataFetched: true,
     });
 
@@ -91,21 +95,6 @@ class ProblemView extends Component {
             <Text style={styles.text}>{text}</Text>
           </View>
         }
-      />
-    );
-  }
-
-  getListItem(icon, text, color) {
-    return (
-      <ListItem
-        style={{
-          primaryText: {
-            fontSize: 16,
-            color: color || COLOR.black,
-          },
-        }}
-        leftElement={<MaterialCommunityIcon name={icon} size={24} color={color} />}
-        centerElement={text}
       />
     );
   }
@@ -159,9 +148,17 @@ class ProblemView extends Component {
           <ScrollView style={{ marginTop: 10 }}>
             {this.getMultilineListItem('place', this.state.address)}
 
-            {
-              this.state.problem.problem_type
-              && this.getListItem('alert', this.state.problem.problem_type.verbose_name)
+            {this.state.problem.problem_type &&
+            <ListItem
+              style={{
+                primaryText: {
+                  fontSize: 16,
+                  color: this.state.typeIconObject.color,
+                },
+              }}
+              leftElement={this.state.typeIconObject.icon}
+              centerElement={this.state.problem.problem_type.verbose_name}
+            />
             }
 
             {

@@ -26,42 +26,43 @@ class Main extends Component {
       trees: [],
       allTrees: [],
       problems: [],
-      // TODO: refactor when API will be done
-      // allProblems: [],
+      allProblems: [],
     };
   }
 
   async componentDidMount() {
-    let location = JSON.parse(await AsyncStorage.getItem('location')) || LOCATION;
-    const activeFilters = JSON.parse(await AsyncStorage.getItem('activeFilters')) || ACTIVE_FILTERS;
+    let location = this.props.navigation.getParam('location', null);
 
-    if (LocationService.getLocationPermission()) {
-      const position = await LocationService.getCurrentPosition();
+    if (location == null) {
+      location = JSON.parse(await AsyncStorage.getItem('location')) || LOCATION;
 
-      location = {
-        latitude: position.coords.latitude,
-        longitude: position.coords.longitude,
-        latitudeDelta: 0.01,
-        longitudeDelta: 0.01,
-      };
+      if (LocationService.getLocationPermission()) {
+        const position = await LocationService.getCurrentPosition();
 
-      AsyncStorage.setItem('location', JSON.stringify(location));
+        location = {
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+          latitudeDelta: 0.01,
+          longitudeDelta: 0.01,
+        };
+      }
     }
 
+    AsyncStorage.setItem('location', JSON.stringify(location));
+
+    const activeFilters = JSON.parse(await AsyncStorage.getItem('activeFilters')) || ACTIVE_FILTERS;
     const trees = await TreesService.getTreesInRadius(location);
     const filteredTrees = trees.filter(tree => activeFilters.includes(tree.tree_state));
     const problems = await ProblemsService.getProblemsInRadius(location);
-    // TODO: refactor when API will be done
-    // const filteredProblems = problems
-    // .filter(problem => activeFilters.includes(problem.problem_type.name));
+    const filteredProblems = problems
+      .filter(problem => activeFilters.includes(problem.problem_type.name));
 
     this.setState({
       location,
       trees: filteredTrees,
       allTrees: trees,
-      problems,
-      // problems: filteredTrees,
-      // allProblems: problems,
+      problems: filteredProblems,
+      allProblems: problems,
     });
   }
 
@@ -80,12 +81,10 @@ class Main extends Component {
     const newFilters = this.state.activeFilters.includes(name)
       ? this.state.activeFilters.filter(filter => filter !== name)
       : [...this.state.activeFilters, name];
-    // TODO: refactor when API will be done
-    // const problems = this.state.allProblems
-    // .filter(problem => newFilters.includes(problem.problem_type.name));
-    // this.setState({ activeFilters: newFilters, problems });
+    const problems = this.state.allProblems
+      .filter(problem => newFilters.includes(problem.problem_type.name));
 
-    this.setState({ activeFilters: newFilters });
+    this.setState({ activeFilters: newFilters, problems });
 
     AsyncStorage.setItem('activeFilters', JSON.stringify(newFilters));
   };
@@ -143,6 +142,7 @@ class Main extends Component {
 Main.propTypes = {
   navigation: PropTypes.shape({
     openDrawer: PropTypes.func.isRequired,
+    getParam: PropTypes.func.isRequired,
   }).isRequired,
 };
 

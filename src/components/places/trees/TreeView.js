@@ -161,8 +161,8 @@ class TreeView extends Component {
 
             {this.getListItem(
               'heart-pulse',
-              TREES_STATES[this.state.tree.tree_state].value,
-              TREES_STATES[this.state.tree.tree_state].color,
+              TREES_STATES[this.state.tree.tree_state - 1].value,
+              TREES_STATES[this.state.tree.tree_state - 1].color,
             )}
 
             {

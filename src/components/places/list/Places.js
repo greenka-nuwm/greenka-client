@@ -2,11 +2,14 @@ import React, { Component, Fragment } from 'react';
 import { ActivityIndicator, Dimensions, StatusBar, View } from 'react-native';
 import { COLOR, ThemeProvider, Toolbar } from 'react-native-material-ui';
 import { TabBar, TabView } from 'react-native-tab-view';
+import AsyncStorage from 'rn-async-storage';
+import { ACTIVE_FILTERS } from '../../../consts/appConsts';
 import { uiTheme } from '../../../consts/styles';
 import LocationService from '../../../services/LocationService';
 import NavigationService from '../../../services/NavigationService';
 import UserService from '../../../services/UserService';
 import ProblemsList from './ProblemsList';
+
 import TreesList from './TreesList';
 
 class Places extends Component {
@@ -31,39 +34,8 @@ class Places extends Component {
     let trees = await UserService.getUserTrees();
     let problems = await UserService.getUserProblems();
 
-    trees = trees.map(tree => {
-      // TODO: refactor to async/await
-      // const address = (await LocationService.geocodePosition({
-      //   longitude: tree.longitude,
-      //   latitude: tree.latitude,
-      // })).formattedAddress;
-
-      let address;
-
-      LocationService.geocodePosition({
-        longitude: tree.longitude,
-        latitude: tree.latitude,
-      }).then(formattedAddress => { address = formattedAddress; });
-
-      return { ...tree, address };
-    });
-
-    problems = problems.map(problem => {
-      // TODO: refactor to async/await
-      // const address = (await LocationService.geocodePosition({
-      //   longitude: problem.longitude,
-      //   latitude: problem.latitude,
-      // })).formattedAddress;
-
-      let address;
-
-      LocationService.geocodePosition({
-        longitude: problem.longitude,
-        latitude: problem.latitude,
-      }).then(formattedAddress => { address = formattedAddress; });
-
-      return { ...problem, address };
-    });
+    trees = await this.getArrayWithAddress(trees);
+    problems = await this.getArrayWithAddress(problems);
 
     this.setState({
       trees,
@@ -71,6 +43,48 @@ class Places extends Component {
       isDataFetched: true,
     });
   }
+
+  getArrayWithAddress = async array => (
+    Promise.all(array.map(async item => {
+      const {
+        adminArea,
+        feature,
+        locality,
+        streetName,
+        streetNumber,
+      } = await LocationService.geocodePosition({
+        longitude: item.longitude,
+        latitude: item.latitude,
+      });
+      const address = [feature, streetName, streetNumber, locality, adminArea]
+        .filter(x => x)
+        .join(', ');
+
+      return { ...item, address };
+    }))
+  );
+
+  goToMap = (place, type) => async () => {
+    const location = {
+      latitude: place.latitude,
+      longitude: place.longitude,
+      latitudeDelta: 0.01,
+      longitudeDelta: 0.01,
+    };
+    const activeFilters = await AsyncStorage.getItem('activeFilters');
+
+    const newFilter = type === 'tree'
+      ? ACTIVE_FILTERS[place.tree_state - 1]
+      : place.problem_type.name;
+
+    const newFilters = activeFilters.includes(newFilter)
+      ? activeFilters.filter(filter => filter !== newFilter)
+      : [...activeFilters, newFilter];
+
+    AsyncStorage.setItem('activeFilters', JSON.stringify(newFilters));
+
+    NavigationService.goToHome(location);
+  };
 
   handleIndexChange = index => {
     this.setState({
@@ -96,9 +110,9 @@ class Places extends Component {
   renderScene = ({ route }) => {
     switch (route.key) {
       case 'trees':
-        return <TreesList trees={this.state.trees} />;
+        return <TreesList trees={this.state.trees} goToMap={this.goToMap} />;
       case 'problems':
-        return <ProblemsList problems={this.state.problems} />;
+        return <ProblemsList problems={this.state.problems} goToMap={this.goToMap} />;
       default:
         return null;
     }

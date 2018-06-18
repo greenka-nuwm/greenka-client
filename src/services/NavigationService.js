@@ -9,9 +9,16 @@ class NavigationService {
     NavigationService.navigator.dispatch(DrawerActions.closeDrawer());
   }
 
-  static goToHome() {
-    NavigationService.navigator
-      .dispatch(NavigationActions.navigate({ routeName: 'Home' }));
+  static goToHome(location) {
+    if (location != null) {
+      NavigationService.navigator.dispatch(NavigationActions.navigate({
+        routeName: 'Home',
+        params: { location },
+      }));
+    } else {
+      NavigationService.navigator
+        .dispatch(NavigationActions.navigate({ routeName: 'Home' }));
+    }
   }
 
   static goToPlaces() {

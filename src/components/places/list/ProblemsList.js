@@ -13,20 +13,24 @@ const styles = StyleSheet.create({
   },
 });
 
-const ProblemsList = ({ problems }) => (
+const ProblemsList = ({ problems, goToMap }) => (
   <ScrollView>
     {problems.map((problem, index) => (
       <ListItem
+        divider
         key={`problem-${index}`}
-        leftElement={Object.keys(PROBLEMS_ICONS).includes(problem.problem_type.name)
-          ? PROBLEMS_ICONS[problem.problem_type.name].icon
-          : PROBLEMS_ICONS.other.icon
+        style={{ container: { marginVertical: 5 } }}
+        leftElement={
+          Object.keys(PROBLEMS_ICONS).includes(problem.problem_type.name)
+            ? PROBLEMS_ICONS[problem.problem_type.name].icon
+            : PROBLEMS_ICONS.other.icon
         }
         centerElement={
           <View style={{ flexDirection: 'row' }}>
             <Text style={styles.text}>{problem.address}</Text>
           </View>
         }
+        onPress={goToMap(problem, 'problem')}
       />
     ))}
   </ScrollView>
@@ -46,6 +50,7 @@ ProblemsList.propTypes = {
       longitude: PropTypes.number,
     }),
   ).isRequired,
+  goToMap: PropTypes.func.isRequired,
 };
 
 export default ProblemsList;

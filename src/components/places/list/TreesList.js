@@ -7,25 +7,24 @@ import { TREES_STATES } from '../../../consts/appConsts';
 
 const styles = StyleSheet.create({
   text: {
-    flex: 1,
     flexWrap: 'wrap',
     fontSize: 16,
     color: COLOR.black,
   },
 });
 
-const TreesList = ({ trees }) => (
+const TreesList = ({ trees, goToMap }) => (
   <ScrollView>
     {trees.map((tree, index) => (
       <ListItem
+        divider
         key={`tree-${index}`}
+        style={{ container: { marginVertical: 5 } }}
         leftElement={
           <MaterialCommunityIcon
             name="tree"
             size={24}
-            // TODO: refactor when API will be done
-            // color={TREES_STATES[tree.tree_state - 1].color}
-            color={TREES_STATES[tree.tree_state].color}
+            color={TREES_STATES[tree.tree_state - 1].color}
           />
         }
         centerElement={
@@ -33,6 +32,7 @@ const TreesList = ({ trees }) => (
             <Text style={styles.text}>{tree.address}</Text>
           </View>
         }
+        onPress={goToMap(tree, 'tree')}
       />
     ))}
   </ScrollView>
@@ -47,6 +47,7 @@ TreesList.propTypes = {
       longitude: PropTypes.number,
     }),
   ).isRequired,
+  goToMap: PropTypes.func.isRequired,
 };
 
 export default TreesList;
