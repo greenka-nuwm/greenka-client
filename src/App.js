@@ -3,7 +3,7 @@ import { createDrawerNavigator } from 'react-navigation';
 import AddResponse from './components/AddResponse';
 import Info from './components/Info';
 import Main from './components/Main';
-import Places from './components/places/Places';
+import Places from './components/places/list/Places';
 import AddProblem from './components/places/problems/AddProblem';
 import ProblemView from './components/places/problems/ProblemView';
 import AddTree from './components/places/trees/AddTree';

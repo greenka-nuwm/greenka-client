@@ -18,7 +18,8 @@
     "function-paren-newline": "off",
     "arrow-parens": ["error", "as-needed"],
     "react/no-did-mount-set-state": "off",
-    "class-methods-use-this": "off"
+    "class-methods-use-this": "off",
+    "react/no-array-index-key": "off"
   },
   "globals": {
     "navigator": true

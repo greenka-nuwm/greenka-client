@@ -61,7 +61,6 @@ class Map extends Component {
   }
 }
 
-// TODO: specify types
 Map.propTypes = {
   location: locationType.isRequired,
   trees: PropTypes.arrayOf(
