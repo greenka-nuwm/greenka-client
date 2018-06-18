@@ -26,6 +26,8 @@ class Main extends Component {
       trees: [],
       allTrees: [],
       problems: [],
+      // TODO: refactor when API will be done
+      // allProblems: [],
     };
   }
 
@@ -49,24 +51,43 @@ class Main extends Component {
     const trees = await TreesService.getTreesInRadius(location);
     const filteredTrees = trees.filter(tree => activeFilters.includes(tree.tree_state));
     const problems = await ProblemsService.getProblemsInRadius(location);
+    // TODO: refactor when API will be done
+    // const filteredProblems = problems
+    // .filter(problem => activeFilters.includes(problem.problem_type.name));
 
     this.setState({
       location,
       trees: filteredTrees,
       allTrees: trees,
       problems,
+      // problems: filteredTrees,
+      // allProblems: problems,
     });
   }
 
-  handleActiveTabsChange = newTab => {
-    const newTabs = this.state.activeFilters.includes(newTab.key)
-      ? this.state.activeFilters.filter(key => key !== newTab.key)
-      : [...this.state.activeFilters, newTab.key];
-    const trees = this.state.allTrees.filter(tree => newTabs.includes(tree.tree_state));
+  handleActiveTreesChange = state => {
+    const newFilters = this.state.activeFilters.includes(state.key)
+      ? this.state.activeFilters.filter(filter => filter !== state.key)
+      : [...this.state.activeFilters, state.key];
+    const trees = this.state.allTrees.filter(tree => newFilters.includes(tree.tree_state));
 
-    this.setState({ activeFilters: newTabs, trees });
+    this.setState({ activeFilters: newFilters, trees });
 
-    AsyncStorage.setItem('activeFilters', JSON.stringify(newTabs));
+    AsyncStorage.setItem('activeFilters', JSON.stringify(newFilters));
+  };
+
+  handleActiveProblemsChange = name => {
+    const newFilters = this.state.activeFilters.includes(name)
+      ? this.state.activeFilters.filter(filter => filter !== name)
+      : [...this.state.activeFilters, name];
+    // TODO: refactor when API will be done
+    // const problems = this.state.allProblems
+    // .filter(problem => newFilters.includes(problem.problem_type.name));
+    // this.setState({ activeFilters: newFilters, problems });
+
+    this.setState({ activeFilters: newFilters });
+
+    AsyncStorage.setItem('activeFilters', JSON.stringify(newFilters));
   };
 
   handleRegionChangeComplete = async location => {
@@ -110,7 +131,8 @@ class Main extends Component {
 
           <MapFilters
             activeFilters={this.state.activeFilters}
-            onActiveTabsChange={this.handleActiveTabsChange}
+            onActiveTreesChange={this.handleActiveTreesChange}
+            onActiveProblemsChange={this.handleActiveProblemsChange}
           />
         </Fragment>
       </ThemeProvider>

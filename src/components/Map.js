@@ -2,30 +2,27 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { View } from 'react-native';
 import MapView from 'react-native-maps';
-import { COLOR } from 'react-native-material-ui';
-import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { PROBLEMS_ICONS, TREES_STATES } from '../consts/appConsts';
 import { drawerOverlayStyles } from '../consts/styles';
 import NavigationService from '../services/NavigationService';
 import { locationType } from '../types';
 
 class Map extends Component {
   async componentDidMount() {
-    const healthy = await MaterialCommunityIcon.getImageSource('tree', 26, COLOR.green600);
-    const broken = await MaterialCommunityIcon.getImageSource('tree', 26, COLOR.yellow600);
-    const dying = await MaterialCommunityIcon.getImageSource('tree', 26, COLOR.red600);
-    const dry = await MaterialCommunityIcon.getImageSource('tree', 26, COLOR.orange600);
-    const toping = await MaterialCommunityIcon.getImageSource('tree', 26, COLOR.purple600);
-    const mistletoe = await MaterialCommunityIcon.getImageSource('tree', 26, COLOR.blue600);
+    const treesIcons = {};
+    const problemsIcons = [];
+
+    TREES_STATES.forEach(async state => {
+      treesIcons[state.key] = await state.getImageSource();
+    });
+
+    Object.keys(PROBLEMS_ICONS).forEach(async key => {
+      problemsIcons[key] = await PROBLEMS_ICONS[key].getImageSource();
+    });
 
     this.setState({
-      icons: {
-        healthy,
-        broken,
-        dying,
-        dry,
-        toping,
-        mistletoe,
-      },
+      treesIcons,
+      problemsIcons,
     });
   }
 
@@ -41,7 +38,7 @@ class Map extends Component {
             <MapView.Marker
               key={`marker-${tree.id}`}
               coordinate={{ longitude: tree.longitude, latitude: tree.latitude }}
-              image={this.state.icons[tree.tree_state]}
+              image={this.state.treesIcons[tree.tree_state]}
               onPress={() => NavigationService.goToTreeView(tree.id)}
             />
           ))}
@@ -49,6 +46,10 @@ class Map extends Component {
             <MapView.Marker
               key={`marker-${problem.id}`}
               coordinate={{ longitude: problem.longitude, latitude: problem.latitude }}
+              image={
+                this.state.problemsIcons[problem.problem_type.name]
+                || this.state.problemsIcons.other
+              }
               onPress={() => NavigationService.goToProblemView(problem.id)}
             />
           ))}
@@ -63,8 +64,27 @@ class Map extends Component {
 // TODO: specify types
 Map.propTypes = {
   location: locationType.isRequired,
-  trees: PropTypes.arrayOf().isRequired,
-  problems: PropTypes.arrayOf().isRequired,
+  trees: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number,
+      tree_state: PropTypes.string,
+      latitude: PropTypes.number,
+      longitude: PropTypes.number,
+    }),
+  ).isRequired,
+  problems: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number,
+      problem_type: PropTypes.shape({
+        id: PropTypes.string,
+        name: PropTypes.string,
+        verbose_name: PropTypes.string,
+        description: PropTypes.string,
+      }),
+      latitude: PropTypes.number,
+      longitude: PropTypes.number,
+    }),
+  ).isRequired,
   onRegionChange: PropTypes.func.isRequired,
 };
 

@@ -39,60 +39,6 @@ class AddProblem extends Component {
     });
   }
 
-  getPage() {
-    return (
-      <ThemeProvider uiTheme={uiTheme}>
-        <Fragment>
-          <StatusBar
-            backgroundColor={COLOR.green900}
-            barStyle="light-content"
-          />
-
-          <Toolbar
-            leftElement="close"
-            centerElement="Описати проблему"
-            rightElement="send"
-            onLeftElementPress={NavigationService.goToHome}
-            onRightElementPress={this.handleSubmit}
-            style={{
-              container: {
-                elevation: 0,
-              },
-            }}
-          />
-
-          <ScrollView style={formContainer}>
-            <AddressField
-              addressString={this.state.addressString}
-              location={this.state.location}
-              showAddressError={this.state.showAddressError}
-              onAddressChange={this.handleAddressChange}
-            />
-
-            <View>
-              <Dropdown
-                label="Тип*"
-                value={this.state.type.value}
-                error={this.state.showTypeError ? 'Вкажіть тип проблеми' : ''}
-                data={this.state.types}
-                onChangeText={this.handleTypeChange}
-              />
-            </View>
-
-            <View>
-              <TextField
-                multiline
-                label="Додатковий опис"
-                value={this.state.description}
-                onChangeText={this.handleDescriptionChange}
-              />
-            </View>
-          </ScrollView>
-        </Fragment>
-      </ThemeProvider>
-    );
-  }
-
   handleSubmit = async () => {
     const showAddressError = this.state.addressString === '';
     const showTypeError = this.state.type.value === '';
@@ -103,7 +49,7 @@ class AddProblem extends Component {
       const problem = {
         latitude: this.state.location.latitude,
         longitude: this.state.location.longitude,
-        problem_type: this.state.type.id,
+        problem_type: this.state.type.id + 1,
       };
 
       if (this.state.description) {
@@ -160,10 +106,64 @@ class AddProblem extends Component {
     this.setState({ description });
   };
 
+  renderPage() {
+    return (
+      <ThemeProvider uiTheme={uiTheme}>
+        <Fragment>
+          <StatusBar
+            backgroundColor={COLOR.green900}
+            barStyle="light-content"
+          />
+
+          <Toolbar
+            leftElement="close"
+            centerElement="Описати проблему"
+            rightElement="send"
+            onLeftElementPress={NavigationService.goToHome}
+            onRightElementPress={this.handleSubmit}
+            style={{
+              container: {
+                elevation: 0,
+              },
+            }}
+          />
+
+          <ScrollView style={formContainer}>
+            <AddressField
+              addressString={this.state.addressString}
+              location={this.state.location}
+              showAddressError={this.state.showAddressError}
+              onAddressChange={this.handleAddressChange}
+            />
+
+            <View>
+              <Dropdown
+                label="Тип*"
+                value={this.state.type.value}
+                error={this.state.showTypeError ? 'Вкажіть тип проблеми' : ''}
+                data={this.state.types}
+                onChangeText={this.handleTypeChange}
+              />
+            </View>
+
+            <View>
+              <TextField
+                multiline
+                label="Додатковий опис"
+                value={this.state.description}
+                onChangeText={this.handleDescriptionChange}
+              />
+            </View>
+          </ScrollView>
+        </Fragment>
+      </ThemeProvider>
+    );
+  }
+
   render() {
     return (
       this.state.isDataFetched
-        ? this.getPage()
+        ? this.renderPage()
         : (
           <View style={{ flex: 1, justifyContent: 'center' }}>
             <ActivityIndicator size="large" color={uiTheme.palette.primaryColor} />

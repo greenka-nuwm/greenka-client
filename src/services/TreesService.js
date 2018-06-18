@@ -9,7 +9,7 @@ class TreesService {
     const { width } = Dimensions.get('window');
     const radius = Math.log2(360 * ((width / 256) / region.longitudeDelta)) + 1;
 
-    return (await axios.get('/trees/all/', {
+    return (await axios.get('/trees/', {
       params: {
         radius,
         center: `${region.latitude},${region.longitude}`,

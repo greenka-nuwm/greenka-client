@@ -22,7 +22,11 @@ class ProblemsService {
 
   static async getProblemsTypes() {
     return (await axios.get('/problems/types/')).data
-      .map(type => ({ id: type.id, value: type.verbose_name }));
+      .map(type => ({
+        id: type.id,
+        value: type.verbose_name,
+        name: type.name,
+      }));
   }
 
   static async create(problem) {

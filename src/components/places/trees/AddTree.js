@@ -1,11 +1,11 @@
 import PropTypes from 'prop-types';
 import React, { Component, Fragment } from 'react';
 import { ActivityIndicator, Alert, ScrollView, View } from 'react-native';
-import AsyncStorage from 'rn-async-storage';
 import { Dropdown } from 'react-native-material-dropdown';
 import { TextField } from 'react-native-material-textfield';
 import { ThemeProvider, Toolbar } from 'react-native-material-ui';
 import SnackBar from 'react-native-snackbar';
+import AsyncStorage from 'rn-async-storage';
 import { LOCATION, TREES_STATES } from '../../../consts/appConsts';
 import { formContainer, uiTheme } from '../../../consts/styles';
 import NavigationService from '../../../services/NavigationService';
@@ -24,7 +24,7 @@ class AddTree extends Component {
       type: this.props.type,
       sort: this.props.sort,
       description: this.props.description,
-      states: TREES_STATES,
+      states: TREES_STATES.map(state => ({ value: state.value })),
       isDataFetched: false,
       showAddressError: false,
       showStateError: false,
@@ -46,69 +46,6 @@ class AddTree extends Component {
     });
   }
 
-  getPage() {
-    return (
-      <ThemeProvider uiTheme={uiTheme}>
-        <Fragment>
-          <Toolbar
-            leftElement="close"
-            centerElement="Внести дерево"
-            rightElement="send"
-            onLeftElementPress={NavigationService.goToHome}
-            onRightElementPress={this.handleSubmit}
-            style={{ container: { elevation: 0 } }}
-          />
-
-          <ScrollView style={formContainer}>
-            <AddressField
-              addressString={this.state.addressString}
-              location={this.state.location}
-              showAddressError={this.state.showAddressError}
-              onAddressChange={this.handleAddressChange}
-            />
-
-            <View>
-              <Dropdown
-                label="Стан*"
-                value={this.state.state.value}
-                error={this.state.showStateError ? 'Вкажіть стан дерева' : ''}
-                data={this.state.states}
-                onChangeText={this.handleStateChange}
-              />
-            </View>
-
-            <View>
-              <Dropdown
-                label="Вид дерева"
-                value={this.state.type.value}
-                data={this.state.types}
-                onChangeText={this.handleTypeChange}
-              />
-            </View>
-
-            <View>
-              <Dropdown
-                label="Порода дерева"
-                value={this.state.sort.value}
-                data={this.state.sorts}
-                onChangeText={this.handleSortChange}
-              />
-            </View>
-
-            <View>
-              <TextField
-                multiline
-                label="Додатковий опис"
-                value={this.state.description}
-                onChangeText={this.handleDescriptionChange}
-              />
-            </View>
-          </ScrollView>
-        </Fragment>
-      </ThemeProvider>
-    );
-  }
-
   handleSubmit = async () => {
     const showAddressError = this.state.addressString === '';
     const showStateError = this.state.state.value === '';
@@ -119,15 +56,15 @@ class AddTree extends Component {
       const tree = {
         latitude: this.state.location.latitude,
         longitude: this.state.location.longitude,
-        tree_state: this.state.state.id,
+        tree_state: this.state.state.id + 1,
       };
 
       if (this.state.type.value) {
-        tree.tree_type = this.state.type.id;
+        tree.tree_type = this.state.type.id + 1;
       }
 
       if (this.state.sort.value) {
-        tree.tree_sort = this.state.sort.id;
+        tree.tree_sort = this.state.sort.id + 1;
       }
 
       if (this.state.description) {
@@ -198,10 +135,73 @@ class AddTree extends Component {
     this.setState({ description });
   };
 
+  renderPage() {
+    return (
+      <ThemeProvider uiTheme={uiTheme}>
+        <Fragment>
+          <Toolbar
+            leftElement="close"
+            centerElement="Внести дерево"
+            rightElement="send"
+            onLeftElementPress={NavigationService.goToHome}
+            onRightElementPress={this.handleSubmit}
+            style={{ container: { elevation: 0 } }}
+          />
+
+          <ScrollView style={formContainer}>
+            <AddressField
+              addressString={this.state.addressString}
+              location={this.state.location}
+              showAddressError={this.state.showAddressError}
+              onAddressChange={this.handleAddressChange}
+            />
+
+            <View>
+              <Dropdown
+                label="Стан*"
+                value={this.state.state.value}
+                error={this.state.showStateError ? 'Вкажіть стан дерева' : ''}
+                data={this.state.states}
+                onChangeText={this.handleStateChange}
+              />
+            </View>
+
+            <View>
+              <Dropdown
+                label="Вид дерева"
+                value={this.state.type.value}
+                data={this.state.types}
+                onChangeText={this.handleTypeChange}
+              />
+            </View>
+
+            <View>
+              <Dropdown
+                label="Порода дерева"
+                value={this.state.sort.value}
+                data={this.state.sorts}
+                onChangeText={this.handleSortChange}
+              />
+            </View>
+
+            <View>
+              <TextField
+                multiline
+                label="Додатковий опис"
+                value={this.state.description}
+                onChangeText={this.handleDescriptionChange}
+              />
+            </View>
+          </ScrollView>
+        </Fragment>
+      </ThemeProvider>
+    );
+  }
+
   render() {
     return (
       this.state.isDataFetched
-        ? this.getPage()
+        ? this.renderPage()
         : (
           <View style={{ flex: 1, justifyContent: 'center' }}>
             <ActivityIndicator size="large" color={uiTheme.palette.primaryColor} />
