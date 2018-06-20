@@ -30,8 +30,19 @@ class ProblemsService {
   }
 
   static async create(problem) {
-    return axios
-      .post('/problems/', problem);
+    return (await axios.post('/problems/', problem)).data;
+  }
+
+  static async uploadPhoto(id, photo) {
+    const url = `/problems/${id}/image/`;
+
+    const config = {
+      headers: {
+        'content-type': 'multipart/form-data',
+      },
+    };
+
+    return axios.post(url, photo, config);
   }
 }
 

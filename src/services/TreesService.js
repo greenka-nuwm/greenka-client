@@ -32,8 +32,19 @@ class TreesService {
   }
 
   static async create(tree) {
-    return axios
-      .post('/trees/', tree);
+    return (await axios.post('/trees/', tree)).data;
+  }
+
+  static async uploadPhoto(id, photo) {
+    const url = `/trees/${id}/image/`;
+
+    const config = {
+      headers: {
+        'content-type': 'multipart/form-data',
+      },
+    };
+
+    return axios.post(url, photo, config);
   }
 }
 

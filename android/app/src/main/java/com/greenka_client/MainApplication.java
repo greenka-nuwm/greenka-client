@@ -14,6 +14,7 @@ import com.arttitude360.reactnative.rngoogleplaces.RNGooglePlacesPackage;
 import com.azendoo.reactnativesnackbar.SnackbarPackage;
 import com.BV.LinearGradient.LinearGradientPackage;
 import org.gamega.RNAsyncStoragePackage;
+import com.imagepicker.ImagePickerPackage;
 
 import java.util.Arrays;
 import java.util.List;
@@ -36,7 +37,8 @@ public class MainApplication extends Application implements ReactApplication {
           new RNGooglePlacesPackage(),
           new SnackbarPackage(),
           new LinearGradientPackage(),
-          new RNAsyncStoragePackage()
+          new RNAsyncStoragePackage(),
+          new ImagePickerPackage()
       );
     }
 

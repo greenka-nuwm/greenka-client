@@ -6,6 +6,8 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
+export const API_URL = 'http://192.168.0.55:8000';
+
 export const LOCATION = {
   latitude: 48.379433,
   longitude: 31.16557990000001,

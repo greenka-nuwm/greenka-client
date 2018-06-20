@@ -14,7 +14,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import { COLOR, ListItem, ThemeProvider, Toolbar } from 'react-native-material-ui';
 import Swiper from 'react-native-swiper';
 import PlaceholderImage from '../../../assets/images/placeholder.png';
-import { PROBLEMS_ICONS } from '../../../consts/appConsts';
+import { API_URL, PROBLEMS_ICONS } from '../../../consts/appConsts';
 import { uiTheme } from '../../../consts/styles';
 import LocationService from '../../../services/LocationService';
 import NavigationService from '../../../services/NavigationService';
@@ -64,8 +64,11 @@ class ProblemView extends Component {
   }
 
   async componentDidMount() {
-    const problem = await ProblemsService
+    let problem = await ProblemsService
       .getProblemById(this.props.navigation.getParam('id', null));
+
+    problem = { ...problem, images: problem.images.map(image => `${API_URL}${image.url}`) };
+
     const typeIconObject = Object.keys(PROBLEMS_ICONS).includes(problem.problem_type.name)
       ? PROBLEMS_ICONS[problem.problem_type.name]
       : PROBLEMS_ICONS.other;

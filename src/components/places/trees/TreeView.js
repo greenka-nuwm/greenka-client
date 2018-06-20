@@ -15,7 +15,7 @@ import { COLOR, ListItem, ThemeProvider, Toolbar } from 'react-native-material-u
 import Swiper from 'react-native-swiper';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import PlaceholderImage from '../../../assets/images/placeholder.png';
-import { TREES_STATES } from '../../../consts/appConsts';
+import { API_URL, TREES_STATES } from '../../../consts/appConsts';
 import { uiTheme } from '../../../consts/styles';
 import LocationService from '../../../services/LocationService';
 import NavigationService from '../../../services/NavigationService';
@@ -65,8 +65,10 @@ class TreeView extends Component {
   }
 
   async componentDidMount() {
-    const tree = await TreesService
+    let tree = await TreesService
       .getTreeById(this.props.navigation.getParam('id', null));
+
+    tree = { ...tree, images: tree.images.map(image => `${API_URL}${image.url}`) };
 
     this.setState({
       tree,

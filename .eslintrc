@@ -22,6 +22,7 @@
     "react/no-array-index-key": "off"
   },
   "globals": {
-    "navigator": true
+    "navigator": true,
+    "FormData": true
   }
 }

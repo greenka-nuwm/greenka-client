@@ -1,3 +1,4 @@
+import update from 'immutability-helper';
 import PropTypes from 'prop-types';
 import React, { Component, Fragment } from 'react';
 import { ActivityIndicator, Alert, ScrollView, StatusBar, View } from 'react-native';
@@ -6,12 +7,13 @@ import { TextField } from 'react-native-material-textfield';
 import { COLOR, ThemeProvider, Toolbar } from 'react-native-material-ui';
 import SnackBar from 'react-native-snackbar';
 import AsyncStorage from 'rn-async-storage';
-import { LOCATION } from '../../../consts/appConsts';
+import { ACTIVE_FILTERS, LOCATION } from '../../../consts/appConsts';
 import { formContainer, uiTheme } from '../../../consts/styles';
 import NavigationService from '../../../services/NavigationService';
 import ProblemsService from '../../../services/ProblemsService';
 import { locationType, objectType } from '../../../types';
 import AddressField from '../AddressField';
+import PhotoUploader from '../PhotoUploader';
 
 class AddProblem extends Component {
   constructor(props) {
@@ -25,6 +27,8 @@ class AddProblem extends Component {
       isDataFetched: false,
       showAddressError: false,
       showTypeError: false,
+      images: [],
+      formDatas: [],
     };
   }
 
@@ -57,7 +61,11 @@ class AddProblem extends Component {
       }
 
       try {
-        await ProblemsService.create(problem);
+        const { id } = await ProblemsService.create(problem);
+
+        this.state.formDatas.forEach(async photo => {
+          await ProblemsService.uploadPhoto(id, photo);
+        });
 
         const location = {
           latitude: this.state.latitude,
@@ -65,7 +73,7 @@ class AddProblem extends Component {
           latitudeDelta: 0.01,
           longitudeDelta: 0.01,
         };
-        const activeFilters = await AsyncStorage.getItem('activeFilters');
+        const activeFilters = JSON.parse(await AsyncStorage.getItem('activeFilters')) || ACTIVE_FILTERS;
         const newFilter = this.state.type.name;
         const newFilters = activeFilters.includes(newFilter)
           ? activeFilters.filter(filter => filter !== newFilter)
@@ -111,6 +119,20 @@ class AddProblem extends Component {
 
   handleDescriptionChange = description => {
     this.setState({ description });
+  };
+
+  handleImageDelete = index => {
+    this.setState(update(this.state, {
+      images: { $splice: [[index, 1]] },
+    }));
+  };
+
+
+  handleAddImage = (uri, formData) => {
+    this.setState(update(this.state, {
+      images: { $push: [uri] },
+      formDatas: { $push: [formData] },
+    }));
   };
 
   renderPage() {
@@ -161,6 +183,12 @@ class AddProblem extends Component {
                 onChangeText={this.handleDescriptionChange}
               />
             </View>
+
+            <PhotoUploader
+              images={this.state.images}
+              onImageDelete={this.handleImageDelete}
+              onAddImage={this.handleAddImage}
+            />
           </ScrollView>
         </Fragment>
       </ThemeProvider>

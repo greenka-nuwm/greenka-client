@@ -1,3 +1,4 @@
+import update from 'immutability-helper';
 import PropTypes from 'prop-types';
 import React, { Component, Fragment } from 'react';
 import { ActivityIndicator, Alert, ScrollView, View } from 'react-native';
@@ -12,6 +13,7 @@ import NavigationService from '../../../services/NavigationService';
 import TreesService from '../../../services/TreesService';
 import { locationType, objectType } from '../../../types';
 import AddressField from '../AddressField';
+import PhotoUploader from '../PhotoUploader';
 
 class AddTree extends Component {
   constructor(props) {
@@ -28,6 +30,8 @@ class AddTree extends Component {
       isDataFetched: false,
       showAddressError: false,
       showStateError: false,
+      images: [],
+      formDatas: [],
     };
   }
 
@@ -71,7 +75,11 @@ class AddTree extends Component {
       }
 
       try {
-        await TreesService.create(tree);
+        const { id } = await TreesService.create(tree);
+
+        this.state.formDatas.forEach(async photo => {
+          await TreesService.uploadPhoto(id, photo);
+        });
 
         const location = {
           latitude: this.state.latitude,
@@ -79,7 +87,7 @@ class AddTree extends Component {
           latitudeDelta: 0.01,
           longitudeDelta: 0.01,
         };
-        const activeFilters = await AsyncStorage.getItem('activeFilters');
+        const activeFilters = JSON.parse(await AsyncStorage.getItem('activeFilters')) || ACTIVE_FILTERS;
         const newFilter = ACTIVE_FILTERS[this.state.state];
         const newFilters = activeFilters.includes(newFilter)
           ? activeFilters.filter(filter => filter !== newFilter)
@@ -139,6 +147,20 @@ class AddTree extends Component {
     this.setState({ description });
   };
 
+  handleImageDelete = index => {
+    this.setState(update(this.state, {
+      images: { $splice: [[index, 1]] },
+    }));
+  };
+
+
+  handleAddImage = (uri, formData) => {
+    this.setState(update(this.state, {
+      images: { $push: [uri] },
+      formDatas: { $push: [formData] },
+    }));
+  };
+
   renderPage() {
     return (
       <ThemeProvider uiTheme={uiTheme}>
@@ -162,9 +184,6 @@ class AddTree extends Component {
 
             <View>
               <Dropdown
-                pickerStyle={{
-                  // height: 170,
-                }}
                 label="Стан*"
                 value={this.state.state.value}
                 error={this.state.showStateError ? 'Вкажіть стан дерева' : ''}
@@ -199,6 +218,12 @@ class AddTree extends Component {
                 onChangeText={this.handleDescriptionChange}
               />
             </View>
+
+            <PhotoUploader
+              images={this.state.images}
+              onImageDelete={this.handleImageDelete}
+              onAddImage={this.handleAddImage}
+            />
           </ScrollView>
         </Fragment>
       </ThemeProvider>
