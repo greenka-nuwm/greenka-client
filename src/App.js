@@ -1,6 +1,13 @@
 import React from 'react';
-import { createDrawerNavigator } from 'react-navigation';
+import {
+  createDrawerNavigator,
+  createStackNavigator,
+  createSwitchNavigator, withNavigation,
+} from 'react-navigation';
 import AddResponse from './components/AddResponse';
+import AuthLoading from './components/auth/AuthLoading';
+import Login from './components/auth/Login';
+import Register from './components/auth/Register';
 import Info from './components/Info';
 import Main from './components/Main';
 import Places from './components/places/list/Places';
@@ -11,36 +18,40 @@ import TreeView from './components/places/trees/TreeView';
 import Sidenav from './components/Sidenav';
 import NavigationService from './services/NavigationService';
 
-const TopLevelNavigator = createDrawerNavigator({
-  Home: {
-    screen: Main,
-  },
-  AddTree: {
-    screen: AddTree,
-  },
-  TreeView: {
-    screen: TreeView,
-  },
-  AddProblem: {
-    screen: AddProblem,
-  },
-  ProblemView: {
-    screen: ProblemView,
-  },
-  Places: {
-    screen: Places,
-  },
-  Info: {
-    screen: Info,
-  },
-  AddResponse: {
-    screen: AddResponse,
-  },
+const AppNavigator = createDrawerNavigator({
+  Home: Main,
+  AddTree,
+  TreeView,
+  AddProblem,
+  ProblemView,
+  Places,
+  Info,
+  AddResponse,
 }, {
   contentComponent: Sidenav,
   backBehavior: 'initialRoute',
 });
 
-const App = () => <TopLevelNavigator ref={NavigationService.setTopLevelNavigator} />;
+const AuthNavigator = withNavigation(createStackNavigator(
+  {
+    Login,
+    Register,
+  },
+  {
+    headerMode: 'none',
+    initialRouteName: 'Login',
+  },
+));
 
-export default App;
+const SwitchNavigator = createSwitchNavigator(
+  {
+    AuthLoading,
+    App: () => <AppNavigator ref={NavigationService.setAppNavigator} />,
+    Auth: AuthNavigator,
+  },
+  {
+    initialRouteName: 'AuthLoading',
+  },
+);
+
+export default SwitchNavigator;

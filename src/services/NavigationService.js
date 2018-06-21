@@ -1,7 +1,7 @@
 import { DrawerActions, NavigationActions } from 'react-navigation';
 
 class NavigationService {
-  static setTopLevelNavigator(navigator) {
+  static setAppNavigator(navigator) {
     NavigationService.navigator = navigator;
   }
 
