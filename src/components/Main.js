@@ -112,6 +112,10 @@ class Main extends Component {
     AsyncStorage.setItem('location', JSON.stringify(location));
   };
 
+  handleUserLocationChange = location => {
+    this.setState({ location });
+  };
+
   renderPage = () => (
     <ThemeProvider uiTheme={uiTheme}>
       <Fragment>
@@ -134,7 +138,9 @@ class Main extends Component {
           onRegionChange={this.debounced}
         />
 
-        {!this.state.isSkippedLogin && <GreenkaActionButton />}
+        {!this.state.isSkippedLogin &&
+        <GreenkaActionButton onUserLocationChange={this.handleUserLocationChange} />
+        }
 
         <MapFilters
           activeFilters={this.state.activeFilters}

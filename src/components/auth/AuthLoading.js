@@ -12,7 +12,7 @@ class AuthLoading extends Component {
       await AsyncStorage.getItem('isSkippedLogin'),
     ));
 
-    this.props.navigation.navigate(isSkippedLogin || token ? 'App' : 'Home');
+    this.props.navigation.navigate(isSkippedLogin || token ? 'App' : 'Auth');
   }
 
   render() {
