@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { Component, Fragment } from 'react';
-import { StatusBar } from 'react-native';
+import { ActivityIndicator, StatusBar, View } from 'react-native';
 import { COLOR, ThemeProvider, Toolbar } from 'react-native-material-ui';
 import AsyncStorage from 'rn-async-storage';
 import { ACTIVE_FILTERS, LOCATION } from '../consts/appConsts';
@@ -27,10 +27,15 @@ class Main extends Component {
       allTrees: [],
       problems: [],
       allProblems: [],
+      isDataFetched: false,
     };
   }
 
   async componentDidMount() {
+    const isSkippedLogin = Boolean(JSON.parse(
+      await AsyncStorage.getItem('isSkippedLogin'),
+    ));
+
     let location = this.props.navigation.getParam('location', null);
 
     if (location == null) {
@@ -58,11 +63,15 @@ class Main extends Component {
       .filter(problem => activeFilters.includes(problem.problem_type.name));
 
     this.setState({
+      isSkippedLogin,
       location,
       trees: filteredTrees,
       allTrees: trees,
       problems: filteredProblems,
       allProblems: problems,
+    });
+    this.setState({
+      isDataFetched: true,
     });
   }
 
@@ -103,40 +112,61 @@ class Main extends Component {
     AsyncStorage.setItem('location', JSON.stringify(location));
   };
 
-  render() {
-    return (
-      <ThemeProvider uiTheme={uiTheme}>
+  renderPage = () => (
+    <ThemeProvider uiTheme={uiTheme}>
+      <Fragment>
+        <StatusBar
+          backgroundColor={COLOR.green900}
+          barStyle="light-content"
+        />
+
+        <Toolbar
+          style={{ container: { zIndex: 10 } }}
+          leftElement="menu"
+          centerElement="greenka"
+          onLeftElementPress={this.props.navigation.openDrawer}
+        />
+
+        <Map
+          location={this.state.location}
+          trees={this.state.trees}
+          problems={this.state.problems}
+          onRegionChange={this.debounced}
+        />
+
+        {!this.state.isSkippedLogin && <GreenkaActionButton />}
+
+        <MapFilters
+          activeFilters={this.state.activeFilters}
+          onActiveTreesChange={this.handleActiveTreesChange}
+          onActiveProblemsChange={this.handleActiveProblemsChange}
+        />
+      </Fragment>
+    </ThemeProvider>
+  );
+
+  render = () => (
+    this.state.isDataFetched
+      ? this.renderPage()
+      : (
         <Fragment>
           <StatusBar
             backgroundColor={COLOR.green900}
             barStyle="light-content"
           />
 
-          <Toolbar
-            style={{ container: { zIndex: 10 } }}
-            leftElement="menu"
-            centerElement="greenka"
-            onLeftElementPress={this.props.navigation.openDrawer}
-          />
-
-          <Map
-            location={this.state.location}
-            trees={this.state.trees}
-            problems={this.state.problems}
-            onRegionChange={this.debounced}
-          />
-
-          <GreenkaActionButton />
-
-          <MapFilters
-            activeFilters={this.state.activeFilters}
-            onActiveTreesChange={this.handleActiveTreesChange}
-            onActiveProblemsChange={this.handleActiveProblemsChange}
-          />
+          <View
+            style={{
+              flex: 1,
+              justifyContent: 'center',
+              backgroundColor: uiTheme.palette.primaryColor,
+            }}
+          >
+            <ActivityIndicator size="large" color={COLOR.white} />
+          </View>
         </Fragment>
-      </ThemeProvider>
-    );
-  }
+      )
+  );
 }
 
 Main.propTypes = {

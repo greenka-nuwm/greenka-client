@@ -2,10 +2,11 @@ import React from 'react';
 import {
   createDrawerNavigator,
   createStackNavigator,
-  createSwitchNavigator, withNavigation,
+  createSwitchNavigator,
 } from 'react-navigation';
 import AddResponse from './components/AddResponse';
 import AuthLoading from './components/auth/AuthLoading';
+import Enter from './components/auth/Enter';
 import Login from './components/auth/Login';
 import Register from './components/auth/Register';
 import Info from './components/Info';
@@ -32,21 +33,22 @@ const AppNavigator = createDrawerNavigator({
   backBehavior: 'initialRoute',
 });
 
-const AuthNavigator = withNavigation(createStackNavigator(
+const AuthNavigator = createStackNavigator(
   {
+    Enter,
     Login,
     Register,
   },
   {
     headerMode: 'none',
-    initialRouteName: 'Login',
+    initialRouteName: 'Enter',
   },
-));
+);
 
 const SwitchNavigator = createSwitchNavigator(
   {
     AuthLoading,
-    App: () => <AppNavigator ref={NavigationService.setAppNavigator} />,
+    App: AppNavigator,
     Auth: AuthNavigator,
   },
   {
@@ -54,4 +56,6 @@ const SwitchNavigator = createSwitchNavigator(
   },
 );
 
-export default SwitchNavigator;
+const App = () => <SwitchNavigator ref={NavigationService.setAppNavigator} />;
+
+export default App;

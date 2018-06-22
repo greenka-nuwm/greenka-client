@@ -43,3 +43,20 @@ export const containerStyles = {
 export const formContainer = {
   paddingHorizontal: 20,
 };
+
+export const greenView = {
+  ...formContainer,
+  flex: 1,
+  justifyContent: 'center',
+  backgroundColor: uiTheme.palette.primaryColor,
+};
+
+export const loginButton = {
+  container: {
+    marginTop: 10,
+    height: 40,
+  },
+  text: {
+    color: uiTheme.palette.primaryColor,
+  },
+};

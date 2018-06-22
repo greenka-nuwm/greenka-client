@@ -59,6 +59,21 @@ class NavigationService {
       params: { id },
     }));
   }
+
+  static goToEnter() {
+    NavigationService.navigator
+      .dispatch(NavigationActions.navigate({ routeName: 'Enter' }));
+  }
+
+  static goToLogin() {
+    NavigationService.navigator
+      .dispatch(NavigationActions.navigate({ routeName: 'Login' }));
+  }
+
+  static goToRegister = () => {
+    NavigationService.navigator
+      .dispatch(NavigationActions.navigate({ routeName: 'Register' }));
+  };
 }
 
 export default NavigationService;

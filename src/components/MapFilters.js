@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { BottomNavigation, Button, COLOR, ThemeProvider } from 'react-native-material-ui';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -8,16 +8,6 @@ import { uiTheme } from '../consts/styles';
 import ProblemsService from '../services/ProblemsService';
 
 const styles = StyleSheet.create({
-  treesFilters: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: COLOR.white,
-  },
-  problemsFilters: {
-    flexDirection: 'column',
-    backgroundColor: COLOR.white,
-  },
   treesStatesColumn: {
     flexDirection: 'column',
     justifyContent: 'center',
@@ -74,7 +64,7 @@ class MapFilters extends Component {
     this.setState({
       active: 'problems',
       treesHeight: 0,
-      problemsHeight: Math.abs(this.state.problemsHeight - 122),
+      problemsHeight: Math.abs(this.state.problemsHeight - 170),
     });
   };
 
@@ -115,7 +105,14 @@ class MapFilters extends Component {
   render() {
     return (
       <ThemeProvider uiTheme={uiTheme}>
-        <Fragment>
+        <View
+          style={{
+            position: 'absolute',
+            bottom: 0,
+            left: 0,
+            right: 0,
+          }}
+        >
           <Button
             raised
             primary
@@ -146,7 +143,15 @@ class MapFilters extends Component {
           }
 
           {this.state.treesHeight > 0 &&
-          <View style={styles.treesFilters}>
+          <View
+            style={{
+              height: this.state.treesHeight,
+              flexDirection: 'row',
+              justifyContent: 'center',
+              alignItems: 'center',
+              backgroundColor: COLOR.white,
+            }}
+          >
             {this.renderTreesStatesColumn(TREES_STATES.slice(0, 3))}
             {this.renderTreesStatesColumn(TREES_STATES.slice(3, 6))}
           </View>
@@ -154,7 +159,11 @@ class MapFilters extends Component {
 
           {this.state.problemsHeight > 0 &&
           <ScrollView
-            style={styles.problemsFilters}
+            style={{
+              flexDirection: 'column',
+              backgroundColor: COLOR.white,
+              height: this.state.problemsHeight,
+            }}
             contentContainerStyle={{ paddingTop: 10 }}
           >
             {this.state.problemsTypes.map(type => (
@@ -182,7 +191,7 @@ class MapFilters extends Component {
             ))}
           </ScrollView>
           }
-        </Fragment>
+        </View>
       </ThemeProvider>
     );
   }

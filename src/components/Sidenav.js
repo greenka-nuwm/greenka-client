@@ -1,7 +1,8 @@
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { Alert, BackHandler, Image } from 'react-native';
 import { Avatar, Drawer, ThemeProvider } from 'react-native-material-ui';
+import AsyncStorage from 'rn-async-storage';
 import { MOCKED_USER } from '../consts/mockedData';
 import { uiTheme } from '../consts/styles';
 import NavigationService from '../services/NavigationService';
@@ -10,7 +11,11 @@ import { userType } from '../types';
 const merge = require('lodash.merge');
 
 class Sidenav extends Component {
-  componentDidMount() {
+  async componentDidMount() {
+    const isSkippedLogin = Boolean(JSON.parse(
+      await AsyncStorage.getItem('isSkippedLogin'),
+    ));
+
     BackHandler.addEventListener('hardwareBackPress', () => {
       if (this.props.navigation.state.isDrawerOpen) {
         NavigationService.closeDrawer();
@@ -20,10 +25,13 @@ class Sidenav extends Component {
 
       return false;
     });
+
+    this.setState({ isSkippedLogin });
   }
 
   // TODO: style sidenav header font color and make darkened background
-  getHeaderStyles = () => {};
+  getHeaderStyles = () => {
+  };
 
   getHeaderOptions = () => (
     this.props.user.profileImage
@@ -47,15 +55,22 @@ class Sidenav extends Component {
         { text: 'Ні', style: 'cancel' },
         {
           text: 'Так',
-          onPress: () => {},
+          onPress: async () => {
+            await AsyncStorage.setItem('isSkippedLogin', 'false');
+            await AsyncStorage.setItem('token', '');
+
+            NavigationService.goToEnter();
+          },
         },
       ],
     );
   };
 
-  render() {
-    return (
-      <ThemeProvider uiTheme={uiTheme}>
+  render = () => (
+    this.state &&
+    <ThemeProvider uiTheme={uiTheme}>
+      <Fragment>
+        {!this.state.isSkippedLogin &&
         <Drawer>
           <Drawer.Header {...this.getHeaderOptions()}>
             <Drawer.Header.Account
@@ -121,9 +136,24 @@ class Sidenav extends Component {
             ]}
           />
         </Drawer>
-      </ThemeProvider>
-    );
-  }
+        }
+
+        {this.state.isSkippedLogin &&
+        <Drawer>
+          <Drawer.Section
+            items={[
+              {
+                icon: 'exit-to-app',
+                value: 'Увійти',
+                onPress: NavigationService.goToLogin,
+              },
+            ]}
+          />
+        </Drawer>
+        }
+      </Fragment>
+    </ThemeProvider>
+  );
 }
 
 Sidenav.propTypes = {

@@ -8,8 +8,11 @@ import { uiTheme } from '../../consts/styles';
 class AuthLoading extends Component {
   async componentDidMount() {
     const token = await AsyncStorage.getItem('token');
+    const isSkippedLogin = Boolean(JSON.parse(
+      await AsyncStorage.getItem('isSkippedLogin'),
+    ));
 
-    this.props.navigation.navigate(token ? 'App' : 'Auth');
+    this.props.navigation.navigate(isSkippedLogin || token ? 'App' : 'Home');
   }
 
   render() {

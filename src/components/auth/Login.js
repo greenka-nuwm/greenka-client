@@ -3,7 +3,9 @@ import React, { Component, Fragment } from 'react';
 import { Alert, StatusBar, StyleSheet, Text, View } from 'react-native';
 import { TextField } from 'react-native-material-textfield';
 import { Button, COLOR, ThemeProvider } from 'react-native-material-ui';
-import { formContainer, uiTheme } from '../../consts/styles';
+import AsyncStorage from 'rn-async-storage';
+import { greenView, loginButton, uiTheme } from '../../consts/styles';
+import NavigationService from '../../services/NavigationService';
 
 const styles = StyleSheet.create({
   logo: {
@@ -33,6 +35,8 @@ class Login extends Component {
       // TODO: fix this
       // await AuthService.login(data);
 
+      await AsyncStorage.setItem('isSkippedLogin', 'false');
+
       this.props.navigation.navigate('App');
     } catch (e) {
       this.setState({ password: '' });
@@ -58,10 +62,6 @@ class Login extends Component {
     this.setState({ password });
   };
 
-  goToRegisterPage = () => {
-    this.props.navigation.navigate('Register');
-  };
-
   render() {
     return (
       <Fragment>
@@ -70,14 +70,7 @@ class Login extends Component {
           barStyle="light-content"
         />
 
-        <View
-          style={{
-            ...formContainer,
-            flex: 1,
-            justifyContent: 'center',
-            backgroundColor: uiTheme.palette.primaryColor,
-          }}
-        >
+        <View style={greenView}>
           <Text style={styles.logo}>greenka</Text>
 
           <TextField
@@ -102,22 +95,14 @@ class Login extends Component {
           <ThemeProvider uiTheme={uiTheme}>
             <Button
               raised
-              style={{
-                container: {
-                  marginTop: 10,
-                  height: 40,
-                },
-                text: {
-                  color: uiTheme.palette.primaryColor,
-                },
-              }}
+              style={loginButton}
               text="Увійти"
               onPress={this.handleSubmit}
             />
           </ThemeProvider>
 
           <Text
-            onPress={this.goToRegisterPage}
+            onPress={NavigationService.goToRegister}
             style={{
               color: COLOR.white,
               marginTop: 8,

@@ -1,13 +1,13 @@
 import axios from 'axios';
-import AsyncStorage from 'rn-async-storage';
+// import AsyncStorage from 'rn-async-storage';
 
 axios.interceptors.request.use(config => {
   const newConfig = { ...config };
   let token;
 
-  AsyncStorage.getItem('token').then(data => {
-    token = JSON.parse(data);
-  });
+  // AsyncStorage.getItem('token').then(data => {
+  //   token = JSON.parse(data);
+  // });
 
   if (token) {
     // newConfig.headers.common.Authorization = `Token ${token}`;
