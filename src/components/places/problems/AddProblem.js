@@ -59,14 +59,21 @@ class AddProblem extends Component {
       try {
         await ProblemsService.create(problem);
 
-        this.setState({
-          addressString: this.props.addressString,
-          location: this.state.userLocation,
-          type: this.props.type,
-          description: this.props.description,
-          showAddressError: false,
-          showTypeError: false,
-        });
+        const location = {
+          latitude: this.state.latitude,
+          longitude: this.state.longitude,
+          latitudeDelta: 0.01,
+          longitudeDelta: 0.01,
+        };
+        const activeFilters = await AsyncStorage.getItem('activeFilters');
+        const newFilter = this.state.type.name;
+        const newFilters = activeFilters.includes(newFilter)
+          ? activeFilters.filter(filter => filter !== newFilter)
+          : [...activeFilters, newFilter];
+
+        AsyncStorage.setItem('activeFilters', JSON.stringify(newFilters));
+
+        NavigationService.goToHome(location);
 
         SnackBar.show({
           title: 'Проблему внесено',
@@ -89,7 +96,7 @@ class AddProblem extends Component {
 
   handleAddressChange = address => {
     this.setState({
-      addressString: address.addressString,
+      addressString: address.fullAddress,
       location: address.location,
       showAddressError: false,
     });

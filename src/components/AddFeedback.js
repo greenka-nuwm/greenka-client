@@ -1,4 +1,3 @@
-import axios from 'axios';
 import React, { Component, Fragment } from 'react';
 import { Alert, Keyboard, ScrollView, StatusBar } from 'react-native';
 import { TextField } from 'react-native-material-textfield';
@@ -6,24 +5,24 @@ import { COLOR, ThemeProvider, Toolbar } from 'react-native-material-ui';
 import SnackBar from 'react-native-snackbar';
 import { formContainer, uiTheme } from '../consts/styles';
 import NavigationService from '../services/NavigationService';
+import UserService from '../services/UserService';
 
-class AddResponse extends Component {
+class AddFeedback extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      response: '',
+      feedback: '',
     };
   }
 
   onSubmit = async () => {
     Keyboard.dismiss();
 
-    // TODO: add endpoint
     try {
-      await axios.post('', this.state.response);
+      await UserService.AddFeedback(this.state.feedback);
 
-      this.setState({ response: '' });
+      NavigationService.goToHome();
 
       SnackBar.show({
         title: 'Відгук надіслано',
@@ -38,8 +37,8 @@ class AddResponse extends Component {
     }
   };
 
-  onChangeText = response => {
-    this.setState({ response });
+  onChangeText = feedback => {
+    this.setState({ feedback });
   };
 
   render() {
@@ -54,7 +53,7 @@ class AddResponse extends Component {
           <Toolbar
             leftElement="close"
             centerElement="Надіслати відгук"
-            rightElement={this.state.response !== '' ? 'send' : ''}
+            rightElement={this.state.feedback !== '' ? 'send' : ''}
             onLeftElementPress={NavigationService.goToHome}
             onRightElementPress={this.onSubmit}
           />
@@ -65,7 +64,7 @@ class AddResponse extends Component {
               autoFocus
               label=""
               placeholder="Відгук"
-              value={this.state.response}
+              value={this.state.feedback}
               onChangeText={this.onChangeText}
             />
           </ScrollView>
@@ -75,4 +74,4 @@ class AddResponse extends Component {
   }
 }
 
-export default AddResponse;
+export default AddFeedback;

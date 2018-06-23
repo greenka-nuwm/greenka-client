@@ -55,6 +55,7 @@ class GreenkaActionButton extends Component {
 
   render = () => (
     <Fragment>
+      {!this.props.isSkippedLogin &&
       <ActionButton
         style={styles.upperButton}
         buttonColor={uiTheme.palette.accentColor}
@@ -79,6 +80,7 @@ class GreenkaActionButton extends Component {
           <MaterialIcon name="report-problem" style={styles.actionButtonIcon} />
         </ActionButton.Item>
       </ActionButton>
+      }
 
       <ActionButton
         style={styles.bottomButton}
@@ -94,6 +96,7 @@ class GreenkaActionButton extends Component {
 }
 
 GreenkaActionButton.propTypes = {
+  isSkippedLogin: PropTypes.bool.isRequired,
   onUserLocationChange: PropTypes.func.isRequired,
 };
 

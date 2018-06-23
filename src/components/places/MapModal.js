@@ -13,21 +13,46 @@ class MapModal extends PureComponent {
     super(props);
 
     this.state = {
+      fullAddress: this.props.addressString,
       addressString: this.props.addressString,
       location: this.props.location,
     };
   }
 
-  handleOnMapPress = ({ nativeEvent: { coordinate } }) => {
-    LocationService.geocodePosition(coordinate).then(address => {
-      this.setState(update(this.state, {
-        addressString: { $set: address.formattedAddress },
-        location: {
-          latitude: { $set: coordinate.latitude },
-          longitude: { $set: coordinate.longitude },
-        },
-      }));
+  componentDidMount = async () => {
+    const [address, fullAddress] = await this.geocodePosition(this.state.location);
+
+    this.setState({
+      addressString: address,
+      fullAddress,
     });
+  };
+
+  geocodePosition = async coordinate => {
+    const {
+      feature,
+      streetName,
+      streetNumber,
+      formattedAddress,
+    } = await LocationService.geocodePosition(coordinate);
+
+    return [
+      [feature, streetName, streetNumber].filter(x => x).join(', '),
+      formattedAddress,
+    ];
+  };
+
+  handleOnMapPress = async ({ nativeEvent: { coordinate } }) => {
+    const [address, fullAddress] = await this.geocodePosition(coordinate);
+
+    this.setState(update(this.state, {
+      addressString: { $set: address },
+      fullAddress: { $set: fullAddress },
+      location: {
+        latitude: { $set: coordinate.latitude },
+        longitude: { $set: coordinate.longitude },
+      },
+    }));
   };
 
   handleSubmit = () => this.props.onSubmit(this.state);
@@ -51,7 +76,17 @@ class MapModal extends PureComponent {
         {
           this.state.addressString !== ''
           && this.state.addressString != null
-          && <Subheader text={this.state.addressString} />
+          && (
+            <Subheader
+              text={this.state.addressString}
+              style={{
+                container: {
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                },
+              }}
+            />
+          )
         }
 
         <MapView

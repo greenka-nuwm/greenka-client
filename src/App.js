@@ -4,7 +4,7 @@ import {
   createStackNavigator,
   createSwitchNavigator,
 } from 'react-navigation';
-import AddResponse from './components/AddResponse';
+import AddFeedback from './components/AddFeedback';
 import AuthLoading from './components/auth/AuthLoading';
 import Enter from './components/auth/Enter';
 import Login from './components/auth/Login';
@@ -27,7 +27,7 @@ const AppNavigator = createDrawerNavigator({
   ProblemView,
   Places,
   Info,
-  AddResponse,
+  AddFeedback,
 }, {
   contentComponent: Sidenav,
   backBehavior: 'initialRoute',

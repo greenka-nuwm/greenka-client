@@ -121,7 +121,7 @@ class Sidenav extends Component {
               {
                 icon: 'chat-bubble',
                 value: 'Надіслати відгук',
-                onPress: NavigationService.goToAddResponse,
+                onPress: NavigationService.goToAddFeedback,
               },
             ]}
           />

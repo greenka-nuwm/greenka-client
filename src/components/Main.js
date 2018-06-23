@@ -138,9 +138,10 @@ class Main extends Component {
           onRegionChange={this.debounced}
         />
 
-        {!this.state.isSkippedLogin &&
-        <GreenkaActionButton onUserLocationChange={this.handleUserLocationChange} />
-        }
+        <GreenkaActionButton
+          isSkippedLogin={this.state.isSkippedLogin}
+          onUserLocationChange={this.handleUserLocationChange}
+        />
 
         <MapFilters
           activeFilters={this.state.activeFilters}

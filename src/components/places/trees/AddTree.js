@@ -6,7 +6,7 @@ import { TextField } from 'react-native-material-textfield';
 import { ThemeProvider, Toolbar } from 'react-native-material-ui';
 import SnackBar from 'react-native-snackbar';
 import AsyncStorage from 'rn-async-storage';
-import { LOCATION, TREES_STATES } from '../../../consts/appConsts';
+import { ACTIVE_FILTERS, LOCATION, TREES_STATES } from '../../../consts/appConsts';
 import { formContainer, uiTheme } from '../../../consts/styles';
 import NavigationService from '../../../services/NavigationService';
 import TreesService from '../../../services/TreesService';
@@ -38,7 +38,6 @@ class AddTree extends Component {
 
     this.setState({
       location,
-      userLocation: location,
       types,
       sorts,
       allSorts: sorts,
@@ -74,16 +73,21 @@ class AddTree extends Component {
       try {
         await TreesService.create(tree);
 
-        this.setState({
-          addressString: this.props.addressString,
-          location: this.state.userLocation,
-          state: this.props.state,
-          type: this.props.type,
-          sort: this.props.sort,
-          description: this.props.description,
-          showAddressError: false,
-          showStateError: false,
-        });
+        const location = {
+          latitude: this.state.latitude,
+          longitude: this.state.longitude,
+          latitudeDelta: 0.01,
+          longitudeDelta: 0.01,
+        };
+        const activeFilters = await AsyncStorage.getItem('activeFilters');
+        const newFilter = ACTIVE_FILTERS[this.state.state];
+        const newFilters = activeFilters.includes(newFilter)
+          ? activeFilters.filter(filter => filter !== newFilter)
+          : [...activeFilters, newFilter];
+
+        AsyncStorage.setItem('activeFilters', JSON.stringify(newFilters));
+
+        NavigationService.goToHome(location);
 
         SnackBar.show({
           title: 'Дерево внесено',
@@ -106,7 +110,7 @@ class AddTree extends Component {
 
   handleAddressChange = address => {
     this.setState({
-      addressString: address.addressString,
+      addressString: address.fullAddress,
       location: address.location,
       showAddressError: false,
     });
@@ -158,6 +162,9 @@ class AddTree extends Component {
 
             <View>
               <Dropdown
+                pickerStyle={{
+                  // height: 170,
+                }}
                 label="Стан*"
                 value={this.state.state.value}
                 error={this.state.showStateError ? 'Вкажіть стан дерева' : ''}

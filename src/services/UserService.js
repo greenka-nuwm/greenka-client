@@ -14,6 +14,10 @@ class UserService {
   static async getUserProblems() {
     return (await axios.get('/user/self/problems/')).data;
   }
+
+  static async AddFeedback(body) {
+    return axios.post('/user/feedback/', { body });
+  }
 }
 
 export default UserService;

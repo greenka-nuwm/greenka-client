@@ -5,15 +5,16 @@ import AsyncStorage from 'rn-async-storage';
 
 class AuthService {
   static async login(data) {
-    const token = (await axios.post('/token/', data)).data;
+    const { token } = (await axios.post('/token/', data)).data;
 
     if (token) {
-      AsyncStorage.setItem('token', token);
+      await AsyncStorage.setItem('token', token);
+      await AsyncStorage.setItem('isSkippedLogin', 'false');
     }
   }
 
   static async register(data) {
-    return (await axios.post('/user/register', data)).data;
+    return (await axios.post('/user/register/', data)).data;
   }
 }
 

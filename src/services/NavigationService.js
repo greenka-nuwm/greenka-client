@@ -41,9 +41,9 @@ class NavigationService {
       .dispatch(NavigationActions.navigate({ routeName: 'Info' }));
   }
 
-  static goToAddResponse() {
+  static goToAddFeedback() {
     NavigationService.navigator
-      .dispatch(NavigationActions.navigate({ routeName: 'AddResponse' }));
+      .dispatch(NavigationActions.navigate({ routeName: 'AddFeedback' }));
   }
 
   static goToTreeView(id) {

@@ -3,8 +3,8 @@ import React, { Component, Fragment } from 'react';
 import { Alert, StatusBar, StyleSheet, Text, View } from 'react-native';
 import { TextField } from 'react-native-material-textfield';
 import { Button, COLOR, ThemeProvider } from 'react-native-material-ui';
-import AsyncStorage from 'rn-async-storage';
 import { greenView, loginButton, uiTheme } from '../../consts/styles';
+import AuthService from '../../services/AuthService';
 import NavigationService from '../../services/NavigationService';
 
 const styles = StyleSheet.create({
@@ -26,16 +26,13 @@ class Login extends Component {
   }
 
   handleSubmit = async () => {
-    // const data = {
-    //   username: this.state.username,
-    //   password: this.state.password,
-    // };
+    const data = {
+      username: this.state.username,
+      password: this.state.password,
+    };
 
     try {
-      // TODO: fix this
-      // await AuthService.login(data);
-
-      await AsyncStorage.setItem('isSkippedLogin', 'false');
+      await AuthService.login(data);
 
       this.props.navigation.navigate('App');
     } catch (e) {
