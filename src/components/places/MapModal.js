@@ -1,9 +1,9 @@
 import update from 'immutability-helper';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import { StatusBar, View } from 'react-native';
+import { View } from 'react-native';
 import MapView from 'react-native-maps';
-import { COLOR, Subheader, Toolbar } from 'react-native-material-ui';
+import { Subheader, Toolbar } from 'react-native-material-ui';
 import { containerStyles, mapStyles } from '../../consts/styles';
 import LocationService from '../../services/LocationService';
 import { locationType } from '../../types';
@@ -60,17 +60,18 @@ class MapModal extends PureComponent {
   render() {
     return (
       <View style={containerStyles}>
-        <StatusBar
-          backgroundColor={COLOR.green900}
-          barStyle="light-content"
-        />
-
         <Toolbar
           leftElement="arrow-back"
           centerElement="Торкніться місця на карті"
           rightElement={this.state.addressString !== '' ? 'send' : ''}
           onLeftElementPress={this.props.onClose}
           onRightElementPress={this.handleSubmit}
+          style={{
+            container: {
+              height: 56,
+              paddingTop: 0,
+            },
+          }}
         />
 
         {

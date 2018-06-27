@@ -24,18 +24,17 @@ import TreesService from '../../../services/TreesService';
 const styles = StyleSheet.create({
   linearGradient: {
     position: 'absolute',
-    zIndex: 1,
+    zIndex: 9,
     left: 0,
     top: 0,
     width: Dimensions.get('window').width,
-    height: 80,
+    height: 100,
     opacity: 0.5,
   },
   toolbarContainer: {
     position: 'absolute',
-    zIndex: 1,
+    zIndex: 10,
     width: Dimensions.get('window').width,
-    height: uiTheme.toolbar.container.height + 40,
     backgroundColor: 'transparent',
   },
   imageDimensions: {
@@ -117,15 +116,15 @@ class TreeView extends Component {
     return (
       <ThemeProvider uiTheme={uiTheme}>
         <Fragment>
+          <StatusBar
+            backgroundColor="rgba(0, 0, 0, 0.3)"
+            barStyle="light-content"
+            translucent
+          />
+
           <LinearGradient
             colors={['rgba(0, 0, 0, 0.80)', 'transparent']}
             style={styles.linearGradient}
-          />
-
-          <StatusBar
-            backgroundColor="transparent"
-            barStyle="light-content"
-            translucent
           />
 
           <Toolbar
@@ -147,8 +146,9 @@ class TreeView extends Component {
                     activeDotStyle={{ width: 10, height: 10 }}
                     dotStyle={{ width: 6, height: 6 }}
                   >
-                    {this.state.tree.images.map(image => (
+                    {this.state.tree.images.map((image, index) => (
                       <Image
+                        key={`photo-${index}`}
                         style={styles.image}
                         source={{ uri: image }}
                       />

@@ -23,18 +23,17 @@ import ProblemsService from '../../../services/ProblemsService';
 const styles = StyleSheet.create({
   linearGradient: {
     position: 'absolute',
-    zIndex: 1,
+    zIndex: 9,
     left: 0,
     top: 0,
     width: Dimensions.get('window').width,
-    height: 80,
+    height: 100,
     opacity: 0.5,
   },
   toolbarContainer: {
     position: 'absolute',
-    zIndex: 1,
+    zIndex: 10,
     width: Dimensions.get('window').width,
-    height: uiTheme.toolbar.container.height + 40,
     backgroundColor: 'transparent',
   },
   imageDimensions: {
@@ -112,7 +111,7 @@ class ProblemView extends Component {
           />
 
           <StatusBar
-            backgroundColor="transparent"
+            backgroundColor="rgba(0, 0, 0, 0.3)"
             barStyle="light-content"
             translucent
           />
@@ -137,8 +136,9 @@ class ProblemView extends Component {
                     activeDotStyle={{ width: 10, height: 10 }}
                     dotStyle={{ width: 6, height: 6 }}
                   >
-                    {this.state.problem.images.map(image => (
+                    {this.state.problem.images.map((image, index) => (
                       <Image
+                        key={`photo-${index}`}
                         style={styles.image}
                         source={{ uri: image }}
                       />

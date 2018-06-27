@@ -1,12 +1,11 @@
 import PropTypes from 'prop-types';
 import React, { Component, Fragment } from 'react';
-import { ActivityIndicator, StatusBar, View } from 'react-native';
-import { COLOR, ThemeProvider, Toolbar } from 'react-native-material-ui';
+import { StatusBar } from 'react-native';
+import { ThemeProvider, Toolbar } from 'react-native-material-ui';
 import AsyncStorage from 'rn-async-storage';
 import { ACTIVE_FILTERS, LOCATION } from '../consts/appConsts';
 import { uiTheme } from '../consts/styles';
-import LocationService from '../services/LocationService';
-import ProblemsService from '../services/ProblemsService';
+import NavigationService from '../services/NavigationService';
 import TreesService from '../services/TreesService';
 import GreenkaActionButton from './GreenkaActionButton';
 import Map from './Map';
@@ -39,39 +38,24 @@ class Main extends Component {
     let location = this.props.navigation.getParam('location', null);
 
     if (location == null) {
-      location = JSON.parse(await AsyncStorage.getItem('location')) || LOCATION;
-
-      if (LocationService.getLocationPermission()) {
-        const position = await LocationService.getCurrentPosition();
-
-        location = {
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude,
-          latitudeDelta: 0.01,
-          longitudeDelta: 0.01,
-        };
-      }
+      location = JSON.parse(await AsyncStorage.getItem('location'));
     }
 
-    AsyncStorage.setItem('location', JSON.stringify(location));
-
-    const activeFilters = JSON.parse(await AsyncStorage.getItem('activeFilters')) || ACTIVE_FILTERS;
-    const trees = await TreesService.getTreesInRadius(location);
+    const activeFilters = JSON.parse(await AsyncStorage.getItem('activeFilters'));
+    const trees = JSON.parse(await AsyncStorage.getItem('trees'));
     const filteredTrees = trees.filter(tree => activeFilters.includes(tree.tree_state));
-    const problems = await ProblemsService.getProblemsInRadius(location);
+    const problems = JSON.parse(await AsyncStorage.getItem('problems'));
     const filteredProblems = problems
       .filter(problem => activeFilters.includes(problem.problem_type.name));
 
     this.setState({
+      isDataFetched: true,
       isSkippedLogin,
       location,
       trees: filteredTrees,
       allTrees: trees,
       problems: filteredProblems,
       allProblems: problems,
-    });
-    this.setState({
-      isDataFetched: true,
     });
   }
 
@@ -116,32 +100,39 @@ class Main extends Component {
     this.setState({ location });
   };
 
-  renderPage = () => (
+  render = () => (
     <ThemeProvider uiTheme={uiTheme}>
       <Fragment>
         <StatusBar
-          backgroundColor={COLOR.green900}
+          backgroundColor="rgba(0, 0, 0, 0.3)"
           barStyle="light-content"
+          translucent
         />
 
         <Toolbar
           style={{ container: { zIndex: 10 } }}
-          leftElement="menu"
+          leftElement={!this.state.isSkippedLogin ? 'menu' : ''}
           centerElement="greenka"
+          rightElement={this.state.isSkippedLogin ? 'exit-to-app' : ''}
           onLeftElementPress={this.props.navigation.openDrawer}
+          onRightElementPress={NavigationService.goToLogin}
         />
 
+        {this.state.isDataFetched &&
         <Map
           location={this.state.location}
           trees={this.state.trees}
           problems={this.state.problems}
           onRegionChange={this.debounced}
         />
+        }
 
+        {this.state.isDataFetched &&
         <GreenkaActionButton
           isSkippedLogin={this.state.isSkippedLogin}
           onUserLocationChange={this.handleUserLocationChange}
         />
+        }
 
         <MapFilters
           activeFilters={this.state.activeFilters}
@@ -150,29 +141,6 @@ class Main extends Component {
         />
       </Fragment>
     </ThemeProvider>
-  );
-
-  render = () => (
-    this.state.isDataFetched
-      ? this.renderPage()
-      : (
-        <Fragment>
-          <StatusBar
-            backgroundColor={COLOR.green900}
-            barStyle="light-content"
-          />
-
-          <View
-            style={{
-              flex: 1,
-              justifyContent: 'center',
-              backgroundColor: uiTheme.palette.primaryColor,
-            }}
-          >
-            <ActivityIndicator size="large" color={COLOR.white} />
-          </View>
-        </Fragment>
-      )
   );
 }
 

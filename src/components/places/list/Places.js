@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import { ActivityIndicator, Dimensions, StatusBar, View } from 'react-native';
-import { COLOR, ThemeProvider, Toolbar } from 'react-native-material-ui';
+import { ThemeProvider, Toolbar } from 'react-native-material-ui';
 import { TabBar, TabView } from 'react-native-tab-view';
 import AsyncStorage from 'rn-async-storage';
 import { ACTIVE_FILTERS } from '../../../consts/appConsts';
@@ -122,8 +122,9 @@ class Places extends Component {
     <ThemeProvider uiTheme={uiTheme}>
       <Fragment>
         <StatusBar
-          backgroundColor={COLOR.green900}
+          backgroundColor="rgba(0, 0, 0, 0.3)"
           barStyle="light-content"
+          translucent
         />
 
         <Toolbar

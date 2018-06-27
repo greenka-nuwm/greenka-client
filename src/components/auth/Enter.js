@@ -33,7 +33,11 @@ class Enter extends Component {
   render() {
     return (
       <Fragment>
-        <StatusBar backgroundColor={COLOR.green900} barStyle="light-content" />
+        <StatusBar
+          backgroundColor="rgba(0, 0, 0, 0.3)"
+          barStyle="light-content"
+          translucent
+        />
 
         <View style={greenView}>
           <Text style={styles.logo}>greenka</Text>

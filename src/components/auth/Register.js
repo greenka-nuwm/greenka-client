@@ -104,14 +104,15 @@ class Register extends Component {
     return (
       <Fragment>
         <StatusBar
-          backgroundColor={COLOR.green900}
+          backgroundColor="rgba(0, 0, 0, 0.3)"
           barStyle="light-content"
+          translucent
         />
 
         <ScrollView
           style={{
             ...formContainer,
-            paddingTop: 10,
+            paddingTop: 34,
             flex: 1,
             backgroundColor: uiTheme.palette.primaryColor,
           }}

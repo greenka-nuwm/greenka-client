@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import { Alert, Keyboard, ScrollView, StatusBar } from 'react-native';
 import { TextField } from 'react-native-material-textfield';
-import { COLOR, ThemeProvider, Toolbar } from 'react-native-material-ui';
+import { ThemeProvider, Toolbar } from 'react-native-material-ui';
 import SnackBar from 'react-native-snackbar';
 import { formContainer, uiTheme } from '../consts/styles';
 import NavigationService from '../services/NavigationService';
@@ -46,8 +46,9 @@ class AddFeedback extends Component {
       <ThemeProvider uiTheme={uiTheme}>
         <Fragment>
           <StatusBar
-            backgroundColor={COLOR.green900}
+            backgroundColor="rgba(0, 0, 0, 0.3)"
             barStyle="light-content"
+            translucent
           />
 
           <Toolbar

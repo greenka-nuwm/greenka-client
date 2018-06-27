@@ -8,7 +8,8 @@ export const uiTheme = {
   },
   toolbar: {
     container: {
-      height: 56,
+      height: 80,
+      paddingTop: 24,
     },
   },
   listItem: {

@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { View } from 'react-native';
 import MapView from 'react-native-maps';
-import { PROBLEMS_ICONS, TREES_STATES } from '../consts/appConsts';
+import AsyncStorage from 'rn-async-storage';
 import { drawerOverlayStyles } from '../consts/styles';
 import NavigationService from '../services/NavigationService';
 import { locationType } from '../types';
@@ -12,22 +12,14 @@ class Map extends Component {
     super(props);
 
     this.state = {
-      treesIcons: [],
-      problemsIcons: [],
+      treesIcons: {},
+      problemsIcons: {},
     };
   }
 
   async componentDidMount() {
-    const treesIcons = {};
-    const problemsIcons = [];
-
-    TREES_STATES.forEach(async state => {
-      treesIcons[state.key] = await state.getImageSource();
-    });
-
-    Object.keys(PROBLEMS_ICONS).forEach(async key => {
-      problemsIcons[key] = await PROBLEMS_ICONS[key].getImageSource();
-    });
+    const treesIcons = JSON.parse(await AsyncStorage.getItem('treesIcons'));
+    const problemsIcons = JSON.parse(await AsyncStorage.getItem('problemsIcons'));
 
     this.setState({
       treesIcons,

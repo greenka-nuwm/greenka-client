@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { Component, Fragment } from 'react';
-import { Alert, BackHandler, Image } from 'react-native';
+import { Alert, BackHandler, Image, StatusBar, StyleSheet } from 'react-native';
 import { Avatar, Drawer, ThemeProvider } from 'react-native-material-ui';
 import AsyncStorage from 'rn-async-storage';
 import { MOCKED_USER } from '../consts/mockedData';
@@ -9,6 +9,12 @@ import NavigationService from '../services/NavigationService';
 import { userType } from '../types';
 
 const merge = require('lodash.merge');
+
+// {
+//   icon: 'info',
+//     value: 'Довідка',
+//   onPress: NavigationService.goToInfo,
+// },
 
 class Sidenav extends Component {
   async componentDidMount() {
@@ -30,8 +36,11 @@ class Sidenav extends Component {
   }
 
   // TODO: style sidenav header font color and make darkened background
-  getHeaderStyles = () => {
-  };
+  getHeaderStyles = () => ({
+    contentContainer: {
+      height: 174,
+    },
+  });
 
   getHeaderOptions = () => (
     this.props.user.profileImage
@@ -70,13 +79,28 @@ class Sidenav extends Component {
     this.state &&
     <ThemeProvider uiTheme={uiTheme}>
       <Fragment>
+        <StatusBar
+          backgroundColor="rgba(0, 0, 0, 0.3)"
+          barStyle="light-content"
+          translucent
+        />
+
         {!this.state.isSkippedLogin &&
         <Drawer>
           <Drawer.Header {...this.getHeaderOptions()}>
             <Drawer.Header.Account
               avatar={
                 this.props.user.avatar
-                  ? <Avatar image={this.props.user.avatar} />
+                  ? (
+                    <Avatar
+                      image={
+                        <Image
+                          style={{ borderRadius: 50, ...StyleSheet.absoluteFillObject }}
+                          source={{ uri: this.props.user.avatar }}
+                        />
+                      }
+                    />
+                  )
                   : <Avatar text={`${this.props.user.firstName[0]}${this.props.user.secondName[0]}`} />
               }
               footer={{
@@ -114,11 +138,6 @@ class Sidenav extends Component {
             divider
             items={[
               {
-                icon: 'info',
-                value: 'Довідка',
-                onPress: NavigationService.goToInfo,
-              },
-              {
                 icon: 'chat-bubble',
                 value: 'Надіслати відгук',
                 onPress: NavigationService.goToAddFeedback,
@@ -148,6 +167,11 @@ class Sidenav extends Component {
                 onPress: NavigationService.goToLogin,
               },
             ]}
+            style={{
+              container: {
+                paddingTop: 30,
+              },
+            }}
           />
         </Drawer>
         }

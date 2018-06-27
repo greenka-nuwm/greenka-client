@@ -63,8 +63,9 @@ class Login extends Component {
     return (
       <Fragment>
         <StatusBar
-          backgroundColor={COLOR.green900}
+          backgroundColor="rgba(0, 0, 0, 0.3)"
           barStyle="light-content"
+          translucent
         />
 
         <View style={greenView}>

@@ -4,10 +4,10 @@ import React, { Component, Fragment } from 'react';
 import { ActivityIndicator, Alert, ScrollView, StatusBar, View } from 'react-native';
 import { Dropdown } from 'react-native-material-dropdown';
 import { TextField } from 'react-native-material-textfield';
-import { COLOR, ThemeProvider, Toolbar } from 'react-native-material-ui';
+import { ThemeProvider, Toolbar } from 'react-native-material-ui';
 import SnackBar from 'react-native-snackbar';
 import AsyncStorage from 'rn-async-storage';
-import { ACTIVE_FILTERS, LOCATION } from '../../../consts/appConsts';
+import { LOCATION } from '../../../consts/appConsts';
 import { formContainer, uiTheme } from '../../../consts/styles';
 import NavigationService from '../../../services/NavigationService';
 import ProblemsService from '../../../services/ProblemsService';
@@ -50,36 +50,41 @@ class AddProblem extends Component {
     this.setState({ showAddressError, showTypeError });
 
     if (!(showAddressError || showTypeError)) {
-      const problem = {
+      const body = {
         latitude: this.state.location.latitude,
         longitude: this.state.location.longitude,
         problem_type: this.state.type.id + 1,
       };
 
       if (this.state.description) {
-        problem.description = this.state.description;
+        body.description = this.state.description;
       }
 
       try {
-        const { id } = await ProblemsService.create(problem);
+        const problem = await ProblemsService.create(body);
 
         this.state.formDatas.forEach(async photo => {
-          await ProblemsService.uploadPhoto(id, photo);
+          await ProblemsService.uploadPhoto(problem.id, photo);
         });
 
         const location = {
-          latitude: this.state.latitude,
-          longitude: this.state.longitude,
+          latitude: this.state.location.latitude,
+          longitude: this.state.location.longitude,
           latitudeDelta: 0.01,
           longitudeDelta: 0.01,
         };
-        const activeFilters = JSON.parse(await AsyncStorage.getItem('activeFilters')) || ACTIVE_FILTERS;
+
+        const problems = JSON.parse(await AsyncStorage.getItem('problems'));
+
+        await AsyncStorage.setItem('problems', JSON.stringify([...problems, problem]));
+
+        const activeFilters = JSON.parse(await AsyncStorage.getItem('activeFilters'));
         const newFilter = this.state.type.name;
         const newFilters = activeFilters.includes(newFilter)
           ? activeFilters.filter(filter => filter !== newFilter)
           : [...activeFilters, newFilter];
 
-        AsyncStorage.setItem('activeFilters', JSON.stringify(newFilters));
+        await AsyncStorage.setItem('activeFilters', JSON.stringify(newFilters));
 
         NavigationService.goToHome(location);
 
@@ -140,8 +145,9 @@ class AddProblem extends Component {
       <ThemeProvider uiTheme={uiTheme}>
         <Fragment>
           <StatusBar
-            backgroundColor={COLOR.green900}
+            backgroundColor="rgba(0, 0, 0, 0.3)"
             barStyle="light-content"
+            translucent
           />
 
           <Toolbar

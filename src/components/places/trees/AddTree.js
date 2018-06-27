@@ -82,18 +82,18 @@ class AddTree extends Component {
         });
 
         const location = {
-          latitude: this.state.latitude,
-          longitude: this.state.longitude,
+          latitude: this.state.location.latitude,
+          longitude: this.state.location.longitude,
           latitudeDelta: 0.01,
           longitudeDelta: 0.01,
         };
-        const activeFilters = JSON.parse(await AsyncStorage.getItem('activeFilters')) || ACTIVE_FILTERS;
+        const activeFilters = JSON.parse(await AsyncStorage.getItem('activeFilters'));
         const newFilter = ACTIVE_FILTERS[this.state.state];
         const newFilters = activeFilters.includes(newFilter)
           ? activeFilters.filter(filter => filter !== newFilter)
           : [...activeFilters, newFilter];
 
-        AsyncStorage.setItem('activeFilters', JSON.stringify(newFilters));
+        await AsyncStorage.setItem('activeFilters', JSON.stringify(newFilters));
 
         NavigationService.goToHome(location);
 
