@@ -11,7 +11,9 @@ import {
   View,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import { COLOR, ListItem, ThemeProvider, Toolbar } from 'react-native-material-ui';
+import {
+  COLOR, ListItem, ThemeProvider, Toolbar,
+} from 'react-native-material-ui';
 import Swiper from 'react-native-swiper';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import PlaceholderImage from '../../../assets/images/placeholder.png';
@@ -88,11 +90,11 @@ class TreeView extends Component {
     return (
       <ListItem
         leftElement={icon}
-        centerElement={
+        centerElement={(
           <View style={{ flexDirection: 'row' }}>
             <Text style={styles.text}>{text}</Text>
           </View>
-        }
+)}
       />
     );
   }
@@ -129,9 +131,9 @@ class TreeView extends Component {
 
           <Toolbar
             leftElement="arrow-back"
-            // rightElement="edit"
+            rightElement="more-vert"
             onLeftElementPress={NavigationService.goToHome}
-            // onRightElementPress={() => {}}
+            onRightElementPress={() => {}}
             style={{ container: styles.toolbarContainer }}
           />
 

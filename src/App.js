@@ -19,6 +19,8 @@ import TreeView from './components/places/trees/TreeView';
 import Sidenav from './components/Sidenav';
 import NavigationService from './services/NavigationService';
 
+// TODO: refactor to navigation 3
+
 const AppNavigator = createDrawerNavigator({
   Home: Main,
   AddTree,
