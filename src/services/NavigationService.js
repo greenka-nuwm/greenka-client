@@ -74,6 +74,11 @@ class NavigationService {
     NavigationService.navigator
       .dispatch(NavigationActions.navigate({ routeName: 'Register' }));
   };
+
+  static goToProfile = () => {
+    NavigationService.navigator
+      .dispatch(NavigationActions.navigate({ routeName: 'Profile' }));
+  };
 }
 
 export default NavigationService;

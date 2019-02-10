@@ -31,6 +31,7 @@ class Main extends Component {
   }
 
   async componentDidMount() {
+    NavigationService.goToProfile();
     const isSkippedLogin = Boolean(JSON.parse(
       await AsyncStorage.getItem('isSkippedLogin'),
     ));

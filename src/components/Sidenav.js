@@ -72,7 +72,6 @@ class Sidenav extends Component {
     />
   );
 
-
   getAvatarWithText = () => {
     const { user: { first_name: firstName, last_name: lastName, username } } = this.state;
     const text = firstName && lastName ? `${firstName[0]}${lastName[0]}` : `${username[0]}`;
@@ -139,6 +138,11 @@ class Sidenav extends Component {
       <Drawer.Section
         divider
         items={[
+          {
+            icon: 'person',
+            value: 'Мій профіль',
+            onPress: NavigationService.goToProfile,
+          },
           {
             icon: 'chat-bubble',
             value: 'Надіслати відгук',

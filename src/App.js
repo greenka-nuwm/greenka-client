@@ -1,9 +1,5 @@
 import React from 'react';
-import {
-  createDrawerNavigator,
-  createStackNavigator,
-  createSwitchNavigator,
-} from 'react-navigation';
+import { createDrawerNavigator, createStackNavigator, createSwitchNavigator } from 'react-navigation';
 import AddFeedback from './components/AddFeedback';
 import AuthLoading from './components/auth/AuthLoading';
 import Enter from './components/auth/Enter';
@@ -16,6 +12,7 @@ import AddProblem from './components/places/problems/AddProblem';
 import ProblemView from './components/places/problems/ProblemView';
 import AddTree from './components/places/trees/AddTree';
 import TreeView from './components/places/trees/TreeView';
+import Profile from './components/Profile';
 import Sidenav from './components/Sidenav';
 import NavigationService from './services/NavigationService';
 
@@ -30,6 +27,7 @@ const AppNavigator = createDrawerNavigator({
   Places,
   Info,
   AddFeedback,
+  Profile,
 }, {
   contentComponent: Sidenav,
   backBehavior: 'initialRoute',
