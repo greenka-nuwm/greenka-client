@@ -1,14 +1,17 @@
 import PropTypes from 'prop-types';
 import React, { Component, Fragment } from 'react';
-import { Alert, BackHandler, Image, StatusBar, StyleSheet } from 'react-native';
+import {
+  Alert,
+  BackHandler,
+  Image,
+  StatusBar,
+  StyleSheet,
+} from 'react-native';
 import { Avatar, Drawer, ThemeProvider } from 'react-native-material-ui';
 import AsyncStorage from 'rn-async-storage';
-import { MOCKED_USER } from '../consts/mockedData';
+import defaultBackground from '../assets/images/defaultBackground.png';
 import { uiTheme } from '../consts/styles';
 import NavigationService from '../services/NavigationService';
-import { userType } from '../types';
-
-const merge = require('lodash.merge');
 
 // {
 //   icon: 'info',
@@ -16,13 +19,16 @@ const merge = require('lodash.merge');
 //   onPress: NavigationService.goToInfo,
 // },
 
+// TODO: delete eslint-disable-next-line
 class Sidenav extends Component {
   async componentDidMount() {
     const isSkippedLogin = Boolean(JSON.parse(
       await AsyncStorage.getItem('isSkippedLogin'),
     ));
+    const user = JSON.parse(await AsyncStorage.getItem('user'));
 
     BackHandler.addEventListener('hardwareBackPress', () => {
+      // eslint-disable-next-line react/destructuring-assignment
       if (this.props.navigation.state.isDrawerOpen) {
         NavigationService.closeDrawer();
 
@@ -32,31 +38,128 @@ class Sidenav extends Component {
       return false;
     });
 
-    this.setState({ isSkippedLogin });
+    this.setState({ isSkippedLogin, user });
   }
 
   // TODO: style sidenav header font color and make darkened background
   getHeaderStyles = () => ({
     contentContainer: {
-      height: 174,
+      height: 194,
     },
   });
 
-  getHeaderOptions = () => (
-    this.props.user.profileImage
-      ? {
-        image: <Image source={{ uri: this.props.user.profileImage }} />,
-        style: { ...this.getHeaderStyles() },
-      }
-      : {
-        style: merge(
-          { contentContainer: { backgroundColor: uiTheme.palette.primaryColor } },
-          this.getHeaderStyles(),
-        ),
-      }
+  getProfileImage = () => {
+    const { user: { profileImage } } = this.state;
+
+    return profileImage
+      ? <Image source={{ uri: profileImage }} /> : <Image source={defaultBackground} />;
+  };
+
+  getHeaderOptions = () => ({
+    image: this.getProfileImage(),
+    style: { ...this.getHeaderStyles() },
+  });
+
+  getAvatarImage = () => (
+    <Avatar
+      image={(
+        <Image
+          style={{ borderRadius: 50, ...StyleSheet.absoluteFillObject }}
+          // eslint-disable-next-line react/destructuring-assignment
+          source={{ uri: this.state.user.avatar }}
+        />
+      )}
+    />
   );
 
-  exitDialog = () => {
+
+  getAvatarWithText = () => {
+    const { user: { first_name: firstName, last_name: lastName, username } } = this.state;
+    const text = firstName && lastName ? `${firstName[0]}${lastName[0]}` : `${username[0]}`;
+
+    return <Avatar text={text} />;
+  };
+
+  // eslint-disable-next-line react/destructuring-assignment
+  getAvatar = () => (this.state.user.avatar ? this.getAvatarImage() : this.getAvatarWithText());
+
+  getHeader = () => {
+    const {
+      user: {
+        username, first_name: firstName, last_name: lastName, email,
+      },
+    } = this.state;
+    const name = firstName && lastName ? `${firstName} ${lastName}` : username;
+
+    return (
+      <Drawer.Header {...this.getHeaderOptions()}>
+        <Drawer.Header.Account
+          avatar={this.getAvatar()}
+          footer={{
+            dense: true,
+            centerElement: {
+              primaryText: name,
+              secondaryText: email || undefined,
+            },
+          }}
+        />
+      </Drawer.Header>
+    );
+  };
+
+  getPlacesSection = () => (
+    <Drawer.Section
+      divider
+      items={[
+        {
+          icon: 'place',
+          value: 'Мої місця',
+          onPress: NavigationService.goToPlaces,
+        },
+        {
+          icon: 'local-florist',
+          value: 'Внести дерево',
+          onPress: NavigationService.goToAddTree,
+        },
+        {
+          icon: 'report-problem',
+          value: 'Описати проблему',
+          onPress: NavigationService.goToAddProblem,
+        },
+      ]}
+    />
+  );
+
+  getDrawerForAuthentificatedUser = () => (
+    <Drawer>
+      {this.getHeader()}
+
+      {this.getPlacesSection()}
+
+      <Drawer.Section
+        divider
+        items={[
+          {
+            icon: 'chat-bubble',
+            value: 'Надіслати відгук',
+            onPress: NavigationService.goToAddFeedback,
+          },
+        ]}
+      />
+
+      <Drawer.Section
+        items={[
+          {
+            icon: 'exit-to-app',
+            value: 'Вийти',
+            onPress: this.renderExitDialog,
+          },
+        ]}
+      />
+    </Drawer>
+  );
+
+  renderExitDialog = () => {
     Alert.alert(
       '',
       'Ви впевнені, що бажаєте вийти?',
@@ -75,122 +178,56 @@ class Sidenav extends Component {
     );
   };
 
-  render = () => (
-    this.state &&
-    <ThemeProvider uiTheme={uiTheme}>
-      <Fragment>
-        <StatusBar
-          backgroundColor="rgba(0, 0, 0, 0.3)"
-          barStyle="light-content"
-          translucent
-        />
-
-        {!this.state.isSkippedLogin &&
-        <Drawer>
-          <Drawer.Header {...this.getHeaderOptions()}>
-            <Drawer.Header.Account
-              avatar={
-                this.props.user.avatar
-                  ? (
-                    <Avatar
-                      image={
-                        <Image
-                          style={{ borderRadius: 50, ...StyleSheet.absoluteFillObject }}
-                          source={{ uri: this.props.user.avatar }}
-                        />
-                      }
-                    />
-                  )
-                  : <Avatar text={`${this.props.user.firstName[0]}${this.props.user.secondName[0]}`} />
-              }
-              footer={{
-                dense: true,
-                centerElement: {
-                  primaryText: `${this.props.user.firstName} ${this.props.user.secondName}`,
-                  secondaryText: this.props.user.email,
-                },
-              }}
-            />
-          </Drawer.Header>
-
-          <Drawer.Section
-            divider
-            items={[
-              {
-                icon: 'place',
-                value: 'Ваші місця',
-                onPress: NavigationService.goToPlaces,
-              },
-              {
-                icon: 'local-florist',
-                value: 'Внести дерево',
-                onPress: NavigationService.goToAddTree,
-              },
-              {
-                icon: 'report-problem',
-                value: 'Описати проблему',
-                onPress: NavigationService.goToAddProblem,
-              },
-            ]}
-          />
-
-          <Drawer.Section
-            divider
-            items={[
-              {
-                icon: 'chat-bubble',
-                value: 'Надіслати відгук',
-                onPress: NavigationService.goToAddFeedback,
-              },
-            ]}
-          />
-
-          <Drawer.Section
-            items={[
-              {
-                icon: 'exit-to-app',
-                value: 'Вийти',
-                onPress: this.exitDialog,
-              },
-            ]}
-          />
-        </Drawer>
-        }
-
-        {this.state.isSkippedLogin &&
-        <Drawer>
-          <Drawer.Section
-            items={[
-              {
-                icon: 'exit-to-app',
-                value: 'Увійти',
-                onPress: NavigationService.goToLogin,
-              },
-            ]}
-            style={{
-              container: {
-                paddingTop: 30,
-              },
-            }}
-          />
-        </Drawer>
-        }
-      </Fragment>
-    </ThemeProvider>
+  getDrawerForUnauthenticatedUser = () => (
+    <Drawer>
+      <Drawer.Section
+        items={[
+          {
+            icon: 'exit-to-app',
+            value: 'Увійти',
+            onPress: NavigationService.goToLogin,
+          },
+        ]}
+        style={{
+          container: {
+            paddingTop: 30,
+          },
+        }}
+      />
+    </Drawer>
   );
+
+  render = () => {
+    if (!this.state) {
+      return null;
+    }
+
+    const { isSkippedLogin } = this.state;
+
+    return (
+      <ThemeProvider uiTheme={uiTheme}>
+        <Fragment>
+          <StatusBar
+            backgroundColor="rgba(0, 0, 0, 0.3)"
+            barStyle="light-content"
+            translucent
+          />
+
+          {!isSkippedLogin && this.getDrawerForAuthentificatedUser()}
+
+          {isSkippedLogin && this.getDrawerForUnauthenticatedUser()}
+        </Fragment>
+      </ThemeProvider>
+    );
+  }
 }
 
 Sidenav.propTypes = {
-  user: userType,
   navigation: PropTypes.shape({
     state: PropTypes.shape({
       isDrawerOpen: PropTypes.bool.isRequired,
     }).isRequired,
   }).isRequired,
-};
-
-Sidenav.defaultProps = {
-  user: MOCKED_USER,
 };
 
 export default Sidenav;

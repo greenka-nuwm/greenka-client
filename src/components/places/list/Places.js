@@ -129,7 +129,7 @@ class Places extends Component {
 
         <Toolbar
           leftElement="arrow-back"
-          centerElement="Ваші місця"
+          centerElement="Мої місця"
           onLeftElementPress={NavigationService.goToHome}
           style={{ container: { elevation: 0 } }}
         />

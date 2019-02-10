@@ -1,11 +1,19 @@
 import PropTypes from 'prop-types';
 import React, { Component, Fragment } from 'react';
-import { Alert, StatusBar, StyleSheet, Text, View } from 'react-native';
+import {
+  Alert,
+  StatusBar,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import { TextField } from 'react-native-material-textfield';
 import { Button, COLOR, ThemeProvider } from 'react-native-material-ui';
+import AsyncStorage from 'rn-async-storage';
 import { greenView, loginButton, uiTheme } from '../../consts/styles';
 import AuthService from '../../services/AuthService';
 import NavigationService from '../../services/NavigationService';
+import UserService from '../../services/UserService';
 
 const styles = StyleSheet.create({
   logo: {
@@ -26,14 +34,16 @@ class Login extends Component {
   }
 
   handleSubmit = async () => {
-    const data = {
-      username: this.state.username,
-      password: this.state.password,
-    };
+    const { username, password } = this.state;
+    const data = { username, password };
 
     try {
       await AuthService.login(data);
 
+      const user = await UserService.getUserProfile();
+
+      await AsyncStorage.setItem('user', JSON.stringify(user));
+      // eslint-disable-next-line react/destructuring-assignment
       this.props.navigation.navigate('App');
     } catch (e) {
       this.setState({ password: '' });
@@ -60,6 +70,8 @@ class Login extends Component {
   };
 
   render() {
+    const { username, password } = this.state;
+
     return (
       <Fragment>
         <StatusBar
@@ -76,7 +88,7 @@ class Login extends Component {
             baseColor={COLOR.white}
             tintColor={COLOR.white}
             label="Логін"
-            value={this.state.username}
+            value={username}
             onChangeText={this.handleUsernameChange}
           />
 
@@ -86,7 +98,7 @@ class Login extends Component {
             baseColor={COLOR.white}
             tintColor={COLOR.white}
             label="Пароль"
-            value={this.state.password}
+            value={password}
             onChangeText={this.handlePasswordChange}
           />
 
